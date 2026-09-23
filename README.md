@@ -1,56 +1,104 @@
-# Welcome to your Expo app 👋
+# MercadON
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo para organização de compras de supermercado e acompanhamento de gastos.
 
-## Get started
+O MercadON tem como princípio oferecer uma experiência simples, gratuita em suas funcionalidades essenciais e offline-first.
 
-1. Install dependencies
+## Stack
 
-   ```bash
-   npm install
-   ```
+- React Native
+- Expo
+- Expo Router
+- TypeScript
+- npm
 
-2. Start the app
+As versões das dependências são controladas pelo `package.json` e pelo `package-lock.json`.
 
-   ```bash
-   npx expo start
-   ```
+## Executando o projeto
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Instale as dependências:
 
 ```bash
-npm run reset-project
+npm ci
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Inicie o ambiente de desenvolvimento:
 
-### Other setup steps
+```bash
+npx expo start
+```
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Verifique os tipos:
 
-## Learn more
+```bash
+npx tsc --noEmit
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Arquitetura
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+O projeto utiliza uma arquitetura simples, com separação de responsabilidades entre apresentação, domínio e infraestrutura.
 
-## Join the community
+A estrutura deve crescer conforme as necessidades reais do aplicativo.
 
-Join our community of developers creating universal apps.
+### Estrutura de diretórios
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+| Diretório                    | Responsabilidade                                    |
+| ---------------------------- | --------------------------------------------------- |
+| `src/app/`                   | Rotas, layouts e telas do Expo Router               |
+| `src/components/`            | Componentes reutilizáveis de interface              |
+| `src/constants/`             | Constantes compartilhadas                           |
+| `src/database/`              | Configuração e infraestrutura de persistência local |
+| `src/database/migrations/`   | Evolução do esquema do banco                        |
+| `src/database/repositories/` | Implementações de acesso aos dados locais           |
+| `src/domain/models/`         | Modelos e tipos do domínio                          |
+| `src/domain/enums/`          | Conjuntos de valores do domínio                     |
+| `src/domain/repositories/`   | Contratos de repositories, quando necessários       |
+| `src/hooks/`                 | Comportamento reutilizável associado ao React       |
+| `src/services/`              | Coordenação de operações da aplicação               |
+| `src/theme/`                 | Cores, tipografia e demais definições visuais       |
+| `src/utils/`                 | Funções auxiliares genéricas                        |
+
+Alguns diretórios serão introduzidos ou preenchidos conforme as funcionalidades forem implementadas.
+
+### Regras de responsabilidade
+
+- Telas não devem executar queries SQL diretamente.
+- Componentes de apresentação não devem conhecer detalhes de persistência.
+- Modelos e regras de domínio não devem depender do React Native.
+- Services devem coordenar operações da aplicação quando essa separação agregar valor.
+- Repositories devem concentrar o acesso aos dados.
+- Hooks devem encapsular comportamentos associados ao React.
+- Abstrações devem ser introduzidas quando resolverem necessidades concretas.
+
+### Convenções de código
+
+| Elemento   | Convenção            | Exemplo                 |
+| ---------- | -------------------- | ----------------------- |
+| Componente | PascalCase           | `ProductItem.tsx`       |
+| Hook       | Prefixo use          | `useProducts.ts`        |
+| Modelo     | PascalCase           | `Product.ts`            |
+| Service    | camelCase com sufixo | `product.service.ts`    |
+| Repository | camelCase com sufixo | `product.repository.ts` |
+| Utilitário | camelCase            | `formatCurrency.ts`     |
+
+Os imports internos entre diretórios diferentes devem utilizar preferencialmente o alias `@/`, configurado para representar `src/`.
+
+### Evolução da persistência
+
+O MercadON é offline-first.
+
+A persistência local será a implementação inicial, permitindo que o aplicativo funcione sem conexão com a internet.
+
+Quando necessário, contratos de repositories serão definidos para desacoplar as operações da aplicação dos mecanismos de armazenamento.
+
+Futuramente, o aplicativo poderá integrar uma API e um serviço de sincronização sem abandonar obrigatoriamente a persistência local.
+
+Não serão criadas implementações remotas, mecanismos de sincronização ou abstrações especulativas durante o MVP.
+
+## Princípios de desenvolvimento
+
+- Priorizar simplicidade e legibilidade.
+- Evitar complexidade arquitetural prematura.
+- Preservar o funcionamento offline.
+- Separar regras de negócio de detalhes de infraestrutura.
+- Desenvolver incrementalmente, seguindo as issues do projeto.

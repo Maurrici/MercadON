@@ -1,51 +1,68 @@
-import { Checkbox } from 'expo-checkbox';
-import { useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from "react";
+import { FlatList, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-type Product = {
-  name: string,
-  check: boolean
-}
+import { ProductItem } from "@/components/ProductItem";
+import type { Product } from "@/domain/models/Product";
 
 export default function HomeScreen() {
   const [productList, setProductList] = useState<Product[]>([
-    {name: "Arroz", check: false},
-    {name: "Feijão", check: false},
-    {name: "Leite", check: false}
-  ])
+    {
+      id: 1,
+      name: "Arroz",
+      purchased: false,
+    },
+    {
+      id: 2,
+      name: "Feijão",
+      purchased: false,
+    },
+    {
+      id: 3,
+      name: "Leite",
+      purchased: false,
+    },
+  ]);
 
-  const Item = (product: Product) => (
-    <View style={{flexDirection: "row"}}>
-      <Checkbox 
-        value={product.check}
-        onValueChange={value => changeCheck(product.name, value)}
-      />
-      <Text>{product.name}</Text>
-    </View>
-  )
-
-  const changeCheck = (name: string, value: boolean) => {
-    setProductList(currentProductList => {
-      return currentProductList.map(p => (
-        p.name == name ? {...p, check: value} : p
-      ))
-    })
+  function changePurchased(id: number, purchased: boolean) {
+    setProductList((current) =>
+      current.map((product) =>
+        product.id === id ? { ...product, purchased } : product,
+      ),
+    );
   }
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={{flexDirection: 'row', justifyContent: 'center'}}>
-        <View>
-          <Text style={{fontSize: 24, fontWeight: "100"}}>MercadON</Text>
-          <Text style={{fontSize: 14}}>Minha lista de compras</Text>
-          <FlatList 
-            data={productList}
-            renderItem={({item}) => <Item name={item.name} check={item.check} />}
-            keyExtractor={item => item.name}
-          />
-        </View>
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        padding: 24,
+      }}
+    >
+      <View>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+          }}
+        >
+          MercadON
+        </Text>
+
+        <Text>Minha lista de compras</Text>
+      </View>
+
+      <FlatList
+        data={productList}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <ProductItem product={item} onToggle={changePurchased} />
+        )}
+        contentContainerStyle={{
+          gap: 12,
+          paddingTop: 24,
+        }}
+      />
+    </SafeAreaView>
   );
 }
