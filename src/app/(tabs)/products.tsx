@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ProductItem } from "@/components/ProductItem";
 import type { Product } from "@/domain/models/Product";
 
-export default function HomeScreen() {
+export default function ProductScreen() {
   const [productList, setProductList] = useState<Product[]>([
     {
       id: 1,
