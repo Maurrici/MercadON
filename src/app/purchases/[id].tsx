@@ -1,6 +1,8 @@
+import { PrimaryButton } from '@/components/PrimaryButton';
+import { Screen } from '@/components/Screen';
+import { colors, spacing, typography } from '@/theme';
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Pressable, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function DetailsPurchaseScreen() {
   const { id:purchaseId } = useLocalSearchParams<{id: string}>(); 
@@ -8,20 +10,37 @@ export default function DetailsPurchaseScreen() {
   const router = useRouter();
   
   return(
-    <SafeAreaView style={{ flex: 1, padding: 24 }}>
-      <View style={{ gap: 16 }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+    <Screen edges={['left', 'right', 'bottom']}>
+      <View style={styles.content}>
+        <Text style={styles.title}>
           Detalhes da compra
         </Text>
 
-        <Text>Compra selecionada: {purchaseId}</Text>
+        <Text style={styles.description}>Compra selecionada: {purchaseId}</Text>
 
-        <Pressable onPress={() => router.back()}>
-          <Text style={{ color: '#16A34A' }}>
-            Voltar
-          </Text>
-        </Pressable>
+        <PrimaryButton 
+          title='Voltar'
+          onPress={() => router.back()}
+        />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    gap: spacing.xl,
+  },
+
+  title: {
+    ...typography.title,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+
+  description: {
+    ...typography.body,
+    color: colors.textSecondary,
+    marginTop: spacing.sm,
+  },
+});

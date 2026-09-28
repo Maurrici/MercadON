@@ -1,40 +1,54 @@
+import { PrimaryButton } from '@/components/PrimaryButton';
+import { Screen } from '@/components/Screen';
+import { colors, spacing, typography } from '@/theme';
 import { useRouter } from 'expo-router';
-import { Pressable, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function PurchasesScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView style={{ flex: 1, padding: 24 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+    <Screen>
+      <Text style={styles.title}>
         Compras
       </Text>
 
-      <Text>Suas listas de compras aparecerão aqui.</Text>
+      <Text style={styles.description}>Suas listas de compras aparecerão aqui.</Text>
 
-      <View style={{ marginTop: 24, gap: 16 }}>
-        <Pressable
+      <View style={styles.content}>
+        <PrimaryButton 
+          title='+ Cadastrar compra'
           onPress={() => router.push('/purchases/create')}
-        >
-          <Text style={{ color: '#16A34A' }}>
-            + Cadastrar compra
-          </Text>
-        </Pressable>
+        />
 
-        <Pressable
-          onPress={() =>
-            router.push({
+        <PrimaryButton 
+          title='Visualizar compra de exemplo'
+          onPress={() => router.push({
               pathname: '/purchases/[id]',
               params: { id: '1' },
             })
           }
-        >
-          <Text style={{ color: '#16A34A' }}>
-            Visualizar compra de exemplo
-          </Text>
-        </Pressable>
+        />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    marginTop: spacing.md,
+    gap: spacing.xl,
+  },
+
+  title: {
+    ...typography.title,
+    fontWeight: '700',
+    color: colors.textPrimary,
+  },
+
+  description: {
+    ...typography.body,
+    color: colors.textSecondary,
+    marginTop: spacing.sm,
+  },
+});

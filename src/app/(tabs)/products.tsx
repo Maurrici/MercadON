@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { FlatList, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 import { ProductItem } from "@/components/ProductItem";
+import { Screen } from "@/components/Screen";
 import type { Product } from "@/domain/models/Product";
+import { colors, spacing, typography } from '@/theme';
+import { useState } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function ProductScreen() {
   const [productList, setProductList] = useState<Product[]>([
@@ -33,23 +33,15 @@ export default function ProductScreen() {
   }
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        padding: 24,
-      }}
-    >
-      <View>
+    <Screen>
+      <View style={styles.container}>
         <Text
-          style={{
-            fontSize: 24,
-            fontWeight: "bold",
-          }}
+          style={styles.title}
         >
           MercadON
         </Text>
 
-        <Text>Minha lista de compras</Text>
+        <Text style={styles.description}>Minha lista de compras</Text>
       </View>
 
       <FlatList
@@ -58,11 +50,25 @@ export default function ProductScreen() {
         renderItem={({ item }) => (
           <ProductItem product={item} onToggle={changePurchased} />
         )}
-        contentContainerStyle={{
-          gap: 12,
-          paddingTop: 24,
-        }}
+        contentContainerStyle={styles.container}
       />
-    </SafeAreaView>
+    </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  title: {
+    ...typography.title,
+    color: colors.textPrimary,
+    fontWeight: '700',
+  },
+
+  description: {
+    ...typography.body,
+    color: colors.textSecondary,
+  },
+
+  container: {
+    gap: spacing.lg,
+  },
+});
