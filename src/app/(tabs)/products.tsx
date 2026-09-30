@@ -8,23 +8,20 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 export default function ProductScreen() {
   const [productList, setProductList] = useState<Product[]>([
     {
-      id: 1,
+      id: '1',
       name: "Arroz",
-      purchased: false,
     },
     {
-      id: 2,
+      id: '2',
       name: "Feijão",
-      purchased: false,
     },
     {
-      id: 3,
+      id: '3',
       name: "Leite",
-      purchased: false,
     },
   ]);
 
-  function changePurchased(id: number, purchased: boolean) {
+  function changePurchased(id: string, purchased: boolean) {
     setProductList((current) =>
       current.map((product) =>
         product.id === id ? { ...product, purchased } : product,

@@ -5,7 +5,7 @@ import type { Product } from "@/domain/models/Product";
 
 type ProductItemProps = {
   product: Product;
-  onToggle: (id: number, purchased: boolean) => void;
+  onToggle: (id: string, purchased: boolean) => void;
 };
 
 export function ProductItem({ product, onToggle }: ProductItemProps) {
@@ -18,7 +18,7 @@ export function ProductItem({ product, onToggle }: ProductItemProps) {
       }}
     >
       <Checkbox
-        value={product.purchased}
+        value={true} /*TODO*/
         onValueChange={(value) => onToggle(product.id, value)}
       />
 
