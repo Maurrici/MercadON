@@ -10,14 +10,32 @@ export default function ProductScreen() {
     {
       id: '1',
       name: "Arroz",
+      brand: null,
+      categoryId: null,
+      packageQuantityMilli: null,
+      packageUnit: null,
+      createdAt: "",
+      updatedAt: ""
     },
     {
       id: '2',
       name: "Feijão",
+      brand: null,
+      categoryId: null,
+      packageQuantityMilli: null,
+      packageUnit: null,
+      createdAt: "",
+      updatedAt: ""
     },
     {
       id: '3',
       name: "Leite",
+      brand: null,
+      categoryId: null,
+      packageQuantityMilli: null,
+      packageUnit: null,
+      createdAt: "",
+      updatedAt: ""
     },
   ]);
 

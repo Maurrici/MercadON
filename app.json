@@ -25,7 +25,8 @@
           "image": "",
           "imageWidth": 0
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
