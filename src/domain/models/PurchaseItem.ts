@@ -14,4 +14,5 @@ export type PurchaseItem = {
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  deletedAt: ISODateTime | null;
 };

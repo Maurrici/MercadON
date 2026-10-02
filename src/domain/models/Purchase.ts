@@ -6,6 +6,7 @@ type PurchaseBase = {
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  deletedAt: ISODateTime | null;
 };
 
 export type Purchase = PurchaseBase & (

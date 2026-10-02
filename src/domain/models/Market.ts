@@ -6,4 +6,5 @@ export type Market = {
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  deletedAt: ISODateTime | null;
 }

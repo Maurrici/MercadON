@@ -15,7 +15,8 @@ export default function ProductScreen() {
       packageQuantityMilli: null,
       packageUnit: null,
       createdAt: "",
-      updatedAt: ""
+      updatedAt: "",
+      deletedAt: null
     },
     {
       id: '2',
@@ -25,7 +26,8 @@ export default function ProductScreen() {
       packageQuantityMilli: null,
       packageUnit: null,
       createdAt: "",
-      updatedAt: ""
+      updatedAt: "",
+      deletedAt: null
     },
     {
       id: '3',
@@ -35,7 +37,8 @@ export default function ProductScreen() {
       packageQuantityMilli: null,
       packageUnit: null,
       createdAt: "",
-      updatedAt: ""
+      updatedAt: "",
+      deletedAt: null
     },
   ]);
 

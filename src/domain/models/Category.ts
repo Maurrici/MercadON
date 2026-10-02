@@ -6,4 +6,5 @@ export type Category = {
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  deletedAt: ISODateTime | null;
 };

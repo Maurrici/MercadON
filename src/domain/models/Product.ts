@@ -13,4 +13,5 @@ export type Product = {
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
+  deletedAt: ISODateTime | null;
 };
