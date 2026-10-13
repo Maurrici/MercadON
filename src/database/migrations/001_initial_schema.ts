@@ -4,9 +4,7 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 // oferece esse método, sem exigir o restante da interface do banco.
 type MigrationConnection = Pick<SQLiteDatabase, 'execAsync'>;
 
-export async function createInitialSchema(
-  db: MigrationConnection
-): Promise<void> {
+export async function createInitialSchema(db: MigrationConnection): Promise<void> {
   await db.execAsync(`
     CREATE TABLE categories (
       id TEXT PRIMARY KEY NOT NULL,

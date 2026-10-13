@@ -1,3 +1,1 @@
-export type PurchaseStatus =
-  | 'DRAFT'
-  | 'COMPLETED';
+export type PurchaseStatus = 'DRAFT' | 'COMPLETED';

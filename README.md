@@ -102,3 +102,10 @@ Não serão criadas implementações remotas, mecanismos de sincronização ou a
 - Preservar o funcionamento offline.
 - Separar regras de negócio de detalhes de infraestrutura.
 - Desenvolver incrementalmente, seguindo as issues do projeto.
+
+### Qualidade do código
+
+Execute todas as validações antes de concluir uma alteração:
+
+```bash
+npm run check

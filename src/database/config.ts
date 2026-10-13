@@ -1,1 +1,1 @@
-export const DATABASE_NAME = "mercadon.db";
+export const DATABASE_NAME = 'mercadon.db';

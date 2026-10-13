@@ -1,6 +1,6 @@
 import { colors, radius, spacing, typography } from '@/theme';
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, } from 'react-native';
+import { StyleSheet, Text, TextInput } from 'react-native';
 
 type AppInputProps = {
   label: string;
@@ -21,9 +21,7 @@ export function AppInput({
 
   return (
     <>
-      <Text style={styles.label}>
-        {label}
-      </Text>
+      <Text style={styles.label}>{label}</Text>
 
       <TextInput
         accessibilityLabel={label}
@@ -35,11 +33,7 @@ export function AppInput({
         editable={!disabled}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        style={[
-          styles.input,
-          focused && styles.focused,
-          disabled && styles.disabled,
-        ]}
+        style={[styles.input, focused && styles.focused, disabled && styles.disabled]}
       />
     </>
   );

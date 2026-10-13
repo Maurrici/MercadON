@@ -1,63 +1,57 @@
-import { ProductItem } from "@/components/ProductItem";
-import { Screen } from "@/components/Screen";
-import type { Product } from "@/domain/models/Product";
+import { ProductItem } from '@/components/ProductItem';
+import { Screen } from '@/components/Screen';
+import type { Product } from '@/domain/models/Product';
 import { colors, spacing, typography } from '@/theme';
-import { useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 export default function ProductScreen() {
   const [productList, setProductList] = useState<Product[]>([
     {
       id: '1',
-      name: "Arroz",
+      name: 'Arroz',
       brand: null,
       categoryId: null,
       packageQuantityMilli: null,
       packageUnit: null,
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: null
+      createdAt: '',
+      updatedAt: '',
+      deletedAt: null,
     },
     {
       id: '2',
-      name: "Feijão",
+      name: 'Feijão',
       brand: null,
       categoryId: null,
       packageQuantityMilli: null,
       packageUnit: null,
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: null
+      createdAt: '',
+      updatedAt: '',
+      deletedAt: null,
     },
     {
       id: '3',
-      name: "Leite",
+      name: 'Leite',
       brand: null,
       categoryId: null,
       packageQuantityMilli: null,
       packageUnit: null,
-      createdAt: "",
-      updatedAt: "",
-      deletedAt: null
+      createdAt: '',
+      updatedAt: '',
+      deletedAt: null,
     },
   ]);
 
   function changePurchased(id: string, purchased: boolean) {
     setProductList((current) =>
-      current.map((product) =>
-        product.id === id ? { ...product, purchased } : product,
-      ),
+      current.map((product) => (product.id === id ? { ...product, purchased } : product)),
     );
   }
 
   return (
     <Screen>
       <View style={styles.container}>
-        <Text
-          style={styles.title}
-        >
-          MercadON
-        </Text>
+        <Text style={styles.title}>MercadON</Text>
 
         <Text style={styles.description}>Minha lista de compras</Text>
       </View>
@@ -65,9 +59,7 @@ export default function ProductScreen() {
       <FlatList
         data={productList}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <ProductItem product={item} onToggle={changePurchased} />
-        )}
+        renderItem={({ item }) => <ProductItem product={item} onToggle={changePurchased} />}
         contentContainerStyle={styles.container}
       />
     </Screen>

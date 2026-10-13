@@ -1,7 +1,7 @@
-import { Checkbox } from "expo-checkbox";
-import { Text, View } from "react-native";
+import { Checkbox } from 'expo-checkbox';
+import { Text, View } from 'react-native';
 
-import type { Product } from "@/domain/models/Product";
+import type { Product } from '@/domain/models/Product';
 
 type ProductItemProps = {
   product: Product;
@@ -12,15 +12,12 @@ export function ProductItem({ product, onToggle }: ProductItemProps) {
   return (
     <View
       style={{
-        flexDirection: "row",
-        alignItems: "center",
+        flexDirection: 'row',
+        alignItems: 'center',
         gap: 12,
       }}
     >
-      <Checkbox
-        value={true} /*TODO*/
-        onValueChange={(value) => onToggle(product.id, value)}
-      />
+      <Checkbox value={true} /*TODO*/ onValueChange={(value) => onToggle(product.id, value)} />
 
       <Text>{product.name}</Text>
     </View>

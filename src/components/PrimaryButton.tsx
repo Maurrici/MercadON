@@ -1,39 +1,28 @@
-import { colors, radius, spacing, typography } from "@/theme";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { colors, radius, spacing, typography } from '@/theme';
+import { Pressable, StyleSheet, Text } from 'react-native';
 
 type PrimaryButtonProps = {
   title: string;
   onPress: () => void;
   disabled?: boolean;
-}
+};
 
-export function PrimaryButton({
-  title,
-  onPress,
-  disabled = false
-} : PrimaryButtonProps) {
-  return(
+export function PrimaryButton({ title, onPress, disabled = false }: PrimaryButtonProps) {
+  return (
     <Pressable
       accessibilityRole="button"
-      accessibilityState={{disabled}}
+      accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
         pressed && !disabled && styles.pressed,
-        disabled && styles.disabled
+        disabled && styles.disabled,
       ]}
     >
-      <Text
-        style={[
-          styles.label,
-          disabled && styles.disabledLabel
-        ]}
-      >
-        {title}
-      </Text>
+      <Text style={[styles.label, disabled && styles.disabledLabel]}>{title}</Text>
     </Pressable>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

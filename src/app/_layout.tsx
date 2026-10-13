@@ -17,9 +17,9 @@ const navigationTheme = {
     card: colors.surface,
     text: colors.textPrimary,
     border: colors.border,
-    notification: colors.danger
-  }
-}
+    notification: colors.danger,
+  },
+};
 
 function DatabaseLoading() {
   return (
@@ -36,36 +36,23 @@ export default function RootLayout() {
       <ThemeProvider value={navigationTheme}>
         <DatabaseErrorBoundary>
           <Suspense fallback={<DatabaseLoading />}>
-            <SQLiteProvider
-              databaseName={DATABASE_NAME}
-              onInit={initializeDatabase}
-              useSuspense
-            >
+            <SQLiteProvider databaseName={DATABASE_NAME} onInit={initializeDatabase} useSuspense>
               <Stack
                 screenOptions={{
                   headerStyle: {
-                    backgroundColor: colors.surface
+                    backgroundColor: colors.surface,
                   },
                   headerTintColor: colors.primary,
                   contentStyle: {
-                    backgroundColor: colors.background
-                  }
+                    backgroundColor: colors.background,
+                  },
                 }}
               >
-                <Stack.Screen
-                  name='(tabs)'
-                  options={{headerShown: false}}
-                />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
-                <Stack.Screen
-                  name='purchases/create'
-                  options={{title: 'Cadastrar compra'}}
-                />
+                <Stack.Screen name="purchases/create" options={{ title: 'Cadastrar compra' }} />
 
-                <Stack.Screen
-                  name='purchases/[id]'
-                  options={{title: 'Detalhes da compra'}}
-                />
+                <Stack.Screen name="purchases/[id]" options={{ title: 'Detalhes da compra' }} />
               </Stack>
             </SQLiteProvider>
           </Suspense>

@@ -9,21 +9,20 @@ export default function PurchasesScreen() {
 
   return (
     <Screen>
-      <Text style={styles.title}>
-        Compras
-      </Text>
+      <Text style={styles.title}>Compras</Text>
 
       <Text style={styles.description}>Suas listas de compras aparecerão aqui.</Text>
 
       <View style={styles.content}>
-        <PrimaryButton 
-          title='+ Cadastrar compra'
+        <PrimaryButton
+          title="+ Cadastrar compra"
           onPress={() => router.push('/purchases/create')}
         />
 
-        <PrimaryButton 
-          title='Visualizar compra de exemplo'
-          onPress={() => router.push({
+        <PrimaryButton
+          title="Visualizar compra de exemplo"
+          onPress={() =>
+            router.push({
               pathname: '/purchases/[id]',
               params: { id: '1' },
             })

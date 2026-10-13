@@ -9,13 +9,14 @@ type PurchaseBase = {
   deletedAt: ISODateTime | null;
 };
 
-export type Purchase = PurchaseBase & (
-  | {
-      status: 'DRAFT';
-      purchasedAt: null;
-    }
-  | {
-      status: 'COMPLETED';
-      purchasedAt: ISODateTime;
-    }
-);
+export type Purchase = PurchaseBase &
+  (
+    | {
+        status: 'DRAFT';
+        purchasedAt: null;
+      }
+    | {
+        status: 'COMPLETED';
+        purchasedAt: ISODateTime;
+      }
+  );

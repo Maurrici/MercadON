@@ -28,12 +28,10 @@ export class DatabaseErrorBoundary extends Component<Props, State> {
     if (this.state.error) {
       return (
         <View style={styles.container}>
-          <Text style={styles.title}>
-            Não foi possível iniciar o MercadON
-          </Text>
+          <Text style={styles.title}>Não foi possível iniciar o MercadON</Text>
           <Text style={styles.description}>
-            Houve um problema na inicialização. Feche e abra o
-            aplicativo novamente. Seus dados não foram apagados.
+            Houve um problema na inicialização. Feche e abra o aplicativo novamente. Seus dados não
+            foram apagados.
           </Text>
         </View>
       );

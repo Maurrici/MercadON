@@ -15,32 +15,21 @@ export default function HomeScreen() {
     <Screen>
       <View style={styles.content}>
         <View>
-          <Text style={styles.title}>
-            MercadON
-          </Text>
+          <Text style={styles.title}>MercadON</Text>
 
-          <Text style={styles.description}>
-            Bem-vindo ao seu organizador de compras!
-          </Text>
+          <Text style={styles.description}>Bem-vindo ao seu organizador de compras!</Text>
         </View>
 
         <AppInput
-          label='Nome do produto'
-          placeholder='Ex.: Arroz'
+          label="Nome do produto"
+          placeholder="Ex.: Arroz"
           value={productName}
           onChangeText={setProductName}
         />
 
-        <PrimaryButton 
-          title='Ir para Compras'
-          onPress={() => router.push('/purchases')}
-        />
+        <PrimaryButton title="Ir para Compras" onPress={() => router.push('/purchases')} />
 
-        <PrimaryButton
-          title="Adicionar produto (em breve)"
-          onPress={() => {}}
-          disabled
-        />
+        <PrimaryButton title="Adicionar produto (em breve)" onPress={() => {}} disabled />
       </View>
     </Screen>
   );

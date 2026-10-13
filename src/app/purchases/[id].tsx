@@ -1,27 +1,22 @@
 import { PrimaryButton } from '@/components/PrimaryButton';
 import { Screen } from '@/components/Screen';
 import { colors, spacing, typography } from '@/theme';
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function DetailsPurchaseScreen() {
-  const { id:purchaseId } = useLocalSearchParams<{id: string}>(); 
+  const { id: purchaseId } = useLocalSearchParams<{ id: string }>();
 
   const router = useRouter();
-  
-  return(
+
+  return (
     <Screen edges={['left', 'right', 'bottom']}>
       <View style={styles.content}>
-        <Text style={styles.title}>
-          Detalhes da compra
-        </Text>
+        <Text style={styles.title}>Detalhes da compra</Text>
 
         <Text style={styles.description}>Compra selecionada: {purchaseId}</Text>
 
-        <PrimaryButton 
-          title='Voltar'
-          onPress={() => router.back()}
-        />
+        <PrimaryButton title="Voltar" onPress={() => router.back()} />
       </View>
     </Screen>
   );

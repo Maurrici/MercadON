@@ -1,4 +1,4 @@
-import type { ISODateTime, UUID } from "../types";
+import type { ISODateTime, UUID } from '../types';
 
 export type Market = {
   id: UUID;
@@ -7,4 +7,4 @@ export type Market = {
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
   deletedAt: ISODateTime | null;
-}
+};

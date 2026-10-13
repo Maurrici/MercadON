@@ -44,6 +44,7 @@ registrados, sem tabela específica de histórico inicialmente.
 As quantidades serão armazenadas em milésimos da unidade.
 
 Exemplos:
+
 - 2 UNIT = 2000
 - 0,750 KG = 750
 - 1,500 L = 1500
