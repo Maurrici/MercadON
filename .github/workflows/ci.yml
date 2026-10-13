@@ -11,7 +11,7 @@ on:
 
   workflow_dispatch:
 
-permission:
+permissions:
   contents: read
 
 concurrency:
