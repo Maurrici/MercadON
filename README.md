@@ -103,9 +103,19 @@ Não serão criadas implementações remotas, mecanismos de sincronização ou a
 - Separar regras de negócio de detalhes de infraestrutura.
 - Desenvolver incrementalmente, seguindo as issues do projeto.
 
-### Qualidade do código
+### Integração contínua
 
-Execute todas as validações antes de concluir uma alteração:
+Pull Requests e pushes para `main` são validados pelo GitHub Actions.
+
+A pipeline executa:
+
+- instalação reproduzível com `npm ci`;
+- ESLint;
+- TypeScript;
+- verificação de formatação com Prettier.
+
+As mesmas validações podem ser executadas localmente com:
 
 ```bash
 npm run check
+```

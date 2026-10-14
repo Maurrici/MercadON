@@ -44,7 +44,8 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "lint:fix": "expo lint --fix",
-    "typecheck": "tsc --noEmit",
+    "typegen": "expo customize tsconfig.json",
+    "typecheck": "npm run typegen && tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "npm run lint && npm run typecheck && npm run format:check"
