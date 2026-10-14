@@ -118,3 +118,4 @@ As mesmas validações podem ser executadas localmente com:
 
 ```bash
 npm run check
+```
