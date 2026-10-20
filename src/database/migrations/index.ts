@@ -1,14 +1,19 @@
 import { createInitialSchema } from '@/database/migrations/001_initial_schema';
 import type { SQLiteDatabase } from 'expo-sqlite';
+import { applyCatalogIdentityRules } from './002_catalog_identity';
 
 type MigrationConnection = Pick<SQLiteDatabase, 'execAsync'>;
 
 type Migration = {
   version: number;
   up: (db: MigrationConnection) => Promise<void>;
+  requiresForeignKeysOff?: boolean;
 };
 
-const MIGRATIONS: readonly Migration[] = [{ version: 1, up: createInitialSchema }];
+const MIGRATIONS: readonly Migration[] = [
+  { version: 1, up: createInitialSchema },
+  { version: 2, up: applyCatalogIdentityRules, requiresForeignKeysOff: true}
+];
 
 const DATABASE_VERSION = MIGRATIONS.at(-1)?.version ?? 0;
 
@@ -42,11 +47,38 @@ export async function migrateDatabase(database: SQLiteDatabase): Promise<void> {
       );
     }
 
-    await database.withExclusiveTransactionAsync(async (txn) => {
-      await migration.up(txn);
+    const disableForeignKeys = migration.requiresForeignKeysOff === true;
 
-      await txn.execAsync(`PRAGMA user_version = ${migration.version};`);
-    });
+    if (disableForeignKeys) {
+      await database.execAsync(
+        'PRAGMA foreign_keys = OFF;',
+      );
+    }
+
+    try {
+      await database.withExclusiveTransactionAsync(async (txn) => {
+        await migration.up(txn);
+
+        await txn.execAsync(`PRAGMA user_version = ${migration.version};`);
+      });
+    } finally {
+      if (disableForeignKeys) {
+        await database.execAsync(
+          'PRAGMA foreign_keys = ON;',
+        );
+
+        const foreignKeys = await database.getFirstAsync<{ foreign_keys: number }>(
+            'PRAGMA foreign_keys;',
+        );
+
+        if (foreignKeys?.foreign_keys !== 1) {
+          throw new Error(
+            'Não foi possível reativar as foreign keys após a migration.',
+          );
+        }
+      }
+    }
+
 
     currentVersion = migration.version;
   }
