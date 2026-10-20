@@ -12,7 +12,7 @@ type Migration = {
 
 const MIGRATIONS: readonly Migration[] = [
   { version: 1, up: createInitialSchema },
-  { version: 2, up: applyCatalogIdentityRules, requiresForeignKeysOff: true}
+  { version: 2, up: applyCatalogIdentityRules, requiresForeignKeysOff: true },
 ];
 
 const DATABASE_VERSION = MIGRATIONS.at(-1)?.version ?? 0;
@@ -50,9 +50,7 @@ export async function migrateDatabase(database: SQLiteDatabase): Promise<void> {
     const disableForeignKeys = migration.requiresForeignKeysOff === true;
 
     if (disableForeignKeys) {
-      await database.execAsync(
-        'PRAGMA foreign_keys = OFF;',
-      );
+      await database.execAsync('PRAGMA foreign_keys = OFF;');
     }
 
     try {
@@ -63,22 +61,17 @@ export async function migrateDatabase(database: SQLiteDatabase): Promise<void> {
       });
     } finally {
       if (disableForeignKeys) {
-        await database.execAsync(
-          'PRAGMA foreign_keys = ON;',
-        );
+        await database.execAsync('PRAGMA foreign_keys = ON;');
 
         const foreignKeys = await database.getFirstAsync<{ foreign_keys: number }>(
-            'PRAGMA foreign_keys;',
+          'PRAGMA foreign_keys;',
         );
 
         if (foreignKeys?.foreign_keys !== 1) {
-          throw new Error(
-            'Não foi possível reativar as foreign keys após a migration.',
-          );
+          throw new Error('Não foi possível reativar as foreign keys após a migration.');
         }
       }
     }
-
 
     currentVersion = migration.version;
   }

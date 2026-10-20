@@ -2,9 +2,7 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 
 type MigrationConnection = Pick<SQLiteDatabase, 'execAsync'>;
 
-export async function applyCatalogIdentityRules(
-  db: MigrationConnection,
-): Promise<void> {
+export async function applyCatalogIdentityRules(db: MigrationConnection): Promise<void> {
   await db.execAsync(`
     DROP TRIGGER IF EXISTS categories_soft_delete_unassign_products;
 
