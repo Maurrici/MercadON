@@ -1,13 +1,18 @@
-import { colors, radius, spacing, typography } from '@/theme';
+import { colors, spacing, typography } from '@/theme';
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput } from 'react-native';
+import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 
-type AppInputProps = {
+type AppInputProps = Pick<
+  TextInputProps,
+  'autoCapitalize' | 'autoCorrect' | 'inputMode' | 'keyboardType' | 'maxLength' | 'returnKeyType'
+> & {
   label: string;
   value: string;
   onChangeText: (text: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  required?: boolean;
+  error?: string;
 };
 
 export function AppInput({
@@ -16,12 +21,18 @@ export function AppInput({
   onChangeText,
   placeholder,
   disabled = false,
+  required = false,
+  error,
+  ...inputProps
 }: AppInputProps) {
   const [focused, setFocused] = useState(false);
 
   return (
-    <>
-      <Text style={styles.label}>{label}</Text>
+    <View style={styles.field}>
+      <Text style={styles.label}>
+        {label}
+        {required ? ' *' : ''}
+      </Text>
 
       <TextInput
         accessibilityLabel={label}
@@ -33,18 +44,29 @@ export function AppInput({
         editable={!disabled}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        style={[styles.input, focused && styles.focused, disabled && styles.disabled]}
+        style={[
+          styles.input,
+          focused && styles.focused,
+          disabled && styles.disabled,
+          error && styles.inputError,
+        ]}
+        {...inputProps}
       />
-    </>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  field: {
+    gap: 7,
+  },
+
   label: {
-    ...typography.bodySmall,
-    fontWeight: '500',
+    ...typography.caption,
+    fontSize: 13,
+    fontWeight: '600',
     color: colors.textPrimary,
-    marginBottom: spacing.sm,
   },
 
   input: {
@@ -52,7 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: radius.md,
+    borderRadius: 11,
 
     paddingHorizontal: spacing.lg,
 
@@ -67,5 +89,14 @@ const styles = StyleSheet.create({
   disabled: {
     backgroundColor: colors.background,
     color: colors.textSecondary,
+  },
+
+  inputError: {
+    borderColor: colors.danger,
+  },
+
+  error: {
+    ...typography.caption,
+    color: colors.danger,
   },
 });

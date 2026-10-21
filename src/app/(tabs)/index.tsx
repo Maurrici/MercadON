@@ -1,54 +1,49 @@
-import { AppInput } from '@/components/AppInput';
-import { PrimaryButton } from '@/components/PrimaryButton';
+import { AccessCard } from '@/components/AccessCard';
 import { Screen } from '@/components/Screen';
 import { colors, spacing, typography } from '@/theme';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
-  const router = useRouter();
-
-  const [productName, setProductName] = useState<string>('');
-
   return (
-    <Screen>
-      <View style={styles.content}>
-        <View>
-          <Text style={styles.title}>MercadON</Text>
+    <Screen style={styles.screen}>
+      <View style={styles.header}>
+        <Text style={styles.title}>MercadON</Text>
+      </View>
 
-          <Text style={styles.description}>Bem-vindo ao seu organizador de compras!</Text>
-        </View>
+      <Text style={styles.description}>Organize suas compras</Text>
 
-        <AppInput
-          label="Nome do produto"
-          placeholder="Ex.: Arroz"
-          value={productName}
-          onChangeText={setProductName}
+      <View style={styles.cards}>
+        <AccessCard disabled description="Suas listas e compras" icon="✓" title="Compras" />
+        <AccessCard
+          selected
+          description="Seu catálogo pessoal"
+          icon="□"
+          onPress={() => router.push('/products')}
+          title="Produtos"
         />
-
-        <PrimaryButton title="Ir para Compras" onPress={() => router.push('/purchases')} />
-
-        <PrimaryButton title="Adicionar produto (em breve)" onPress={() => {}} disabled />
+        <AccessCard disabled description="Locais onde você compra" icon="⌂" title="Mercados" />
+        <AccessCard disabled description="Preços e gastos" icon="▤" title="Histórico" />
       </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  content: {
-    gap: spacing.xl,
+  screen: { paddingHorizontal: spacing.lg, paddingTop: 0 },
+  header: {
+    minHeight: 78,
+    justifyContent: 'center',
+    marginHorizontal: -spacing.lg,
+    paddingHorizontal: spacing.xl,
+    backgroundColor: colors.surface,
   },
-
-  title: {
-    ...typography.title,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-
+  title: { ...typography.title, fontSize: 22, fontWeight: '700', color: colors.textPrimary },
   description: {
     ...typography.body,
     color: colors.textSecondary,
-    marginTop: spacing.sm,
+    marginTop: 10,
+    marginHorizontal: spacing.xs,
   },
+  cards: { gap: spacing.lg, marginTop: 48 },
 });
