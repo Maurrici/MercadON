@@ -50,6 +50,10 @@ export default function RootLayout() {
               >
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
+                <Stack.Screen name="products/index" options={{ headerShown: false }} />
+
+                <Stack.Screen name="markets/index" options={{ headerShown: false }} />
+
                 <Stack.Screen name="purchases/create" options={{ title: 'Cadastrar compra' }} />
 
                 <Stack.Screen name="purchases/[id]" options={{ title: 'Detalhes da compra' }} />
