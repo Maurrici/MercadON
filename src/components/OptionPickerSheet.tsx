@@ -2,7 +2,11 @@ import { BottomSheet } from '@/components/BottomSheet';
 import { colors, radius, spacing, typography } from '@/theme';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-export type OptionPickerItem<Value extends string = string> = { label: string; value: Value };
+export type OptionPickerItem<Value extends string = string> = {
+  label: string;
+  value: Value;
+  description?: string;
+};
 
 type OptionPickerSheetProps<Value extends string> = {
   visible: boolean;
@@ -22,7 +26,7 @@ export function OptionPickerSheet<Value extends string>({
   onRequestClose,
 }: OptionPickerSheetProps<Value>) {
   return (
-    <BottomSheet visible={visible} title={title} onRequestClose={onRequestClose}>
+    <BottomSheet visible={visible} title={title} onRequestClose={onRequestClose} scrollable>
       <View style={styles.options}>
         {options.map((option) => {
           const selected = option.value === selectedValue;
@@ -38,7 +42,12 @@ export function OptionPickerSheet<Value extends string>({
                 pressed && styles.pressed,
               ]}
             >
-              <Text style={[styles.label, selected && styles.selectedLabel]}>{option.label}</Text>
+              <View style={styles.optionContent}>
+                <Text style={[styles.label, selected && styles.selectedLabel]}>{option.label}</Text>
+                {option.description ? (
+                  <Text style={styles.description}>{option.description}</Text>
+                ) : null}
+              </View>
               {selected ? <Text style={styles.check}>✓</Text> : null}
             </Pressable>
           );
@@ -55,11 +64,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
     borderRadius: radius.lg,
   },
   selected: { backgroundColor: colors.primarySoft },
   pressed: { opacity: 0.75 },
-  label: { ...typography.body, flex: 1, color: colors.textPrimary },
+  optionContent: { flex: 1, gap: spacing.xs },
+  label: { ...typography.body, color: colors.textPrimary },
+  description: { ...typography.caption, color: colors.textSecondary },
   selectedLabel: { fontWeight: '600', color: colors.primary },
   check: { ...typography.body, fontWeight: '700', color: colors.primary },
 });

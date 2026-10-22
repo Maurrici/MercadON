@@ -1,6 +1,15 @@
 import { colors, radius, spacing } from '@/theme';
 import { PropsWithChildren } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type BottomSheetProps = PropsWithChildren<{
@@ -22,6 +31,7 @@ export function BottomSheet({
   const insets = useSafeAreaInsets();
   const content = scrollable ? (
     <ScrollView
+      automaticallyAdjustKeyboardInsets
       bounces={false}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
@@ -40,7 +50,10 @@ export function BottomSheet({
       transparent
       visible={visible}
     >
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.overlay}
+      >
         <Pressable
           accessibilityLabel="Fechar"
           accessibilityRole="button"
@@ -67,7 +80,7 @@ export function BottomSheet({
           ) : null}
           <View style={styles.content}>{content}</View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

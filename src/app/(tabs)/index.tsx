@@ -16,13 +16,17 @@ export default function HomeScreen() {
       <View style={styles.cards}>
         <AccessCard disabled description="Suas listas e compras" icon="✓" title="Compras" />
         <AccessCard
-          selected
           description="Seu catálogo pessoal"
           icon="□"
           onPress={() => router.push('/products')}
           title="Produtos"
         />
-        <AccessCard disabled description="Locais onde você compra" icon="⌂" title="Mercados" />
+        <AccessCard
+          description="Locais onde você compra"
+          icon="⌂"
+          onPress={() => router.push('/markets')}
+          title="Mercados"
+        />
         <AccessCard disabled description="Preços e gastos" icon="▤" title="Histórico" />
       </View>
     </Screen>

@@ -103,7 +103,12 @@ export default function ProductsScreen() {
   }, [products, query]);
 
   const categoryOptions = useMemo(
-    () => categories.map((category) => ({ value: category.id, label: category.name })),
+    () =>
+      categories.map((category) => ({
+        value: category.id,
+        label: category.name,
+        description: category.description,
+      })),
     [categories],
   );
   const unitLabel = formValues.packageUnit
@@ -256,20 +261,23 @@ export default function ProductsScreen() {
             <ActivityIndicator color={colors.primary} size="large" />
           </View>
         ) : filteredProducts.length > 0 ? (
-          <FlatList
-            contentContainerStyle={styles.list}
-            data={filteredProducts}
-            keyboardShouldPersistTaps="handled"
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <ProductRow
-                details={formatDetails(item)}
-                name={item.name}
-                onPressActions={() => openActions(item)}
-              />
-            )}
-            showsVerticalScrollIndicator={false}
-          />
+          <>
+            <Text style={styles.count}>{formatProductCount(filteredProducts.length)}</Text>
+            <FlatList
+              contentContainerStyle={styles.list}
+              data={filteredProducts}
+              keyboardShouldPersistTaps="handled"
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <ProductRow
+                  details={formatDetails(item)}
+                  name={item.name}
+                  onPressActions={() => openActions(item)}
+                />
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          </>
         ) : (
           <View style={styles.emptyContainer}>
             <EmptyState
@@ -385,6 +393,10 @@ function formatDetails(product: ProductListItem) {
     .join(' · ');
 }
 
+function formatProductCount(count: number): string {
+  return `${count} ${count === 1 ? 'produto' : 'produtos'}`;
+}
+
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   header: {
@@ -399,7 +411,15 @@ const styles = StyleSheet.create({
   title: { ...typography.title, fontSize: 22, fontWeight: '700', color: colors.textPrimary },
   content: { flex: 1, paddingHorizontal: spacing.lg, paddingTop: 13 },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  list: { gap: spacing.sm, paddingTop: spacing.lg, paddingBottom: 148 },
+  count: {
+    ...typography.caption,
+    fontSize: 13,
+    fontWeight: '500',
+    color: colors.textSecondary,
+    marginTop: spacing.lg,
+    marginHorizontal: 1,
+  },
+  list: { gap: spacing.sm, paddingTop: 20, paddingBottom: 148 },
   emptyContainer: { flex: 1, justifyContent: 'center', paddingBottom: 100 },
   footer: {
     gap: 28,

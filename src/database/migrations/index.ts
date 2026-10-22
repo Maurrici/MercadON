@@ -2,6 +2,7 @@ import { createInitialSchema } from '@/database/migrations/001_initial_schema';
 import type { SQLiteDatabase } from 'expo-sqlite';
 import { applyCatalogIdentityRules } from './002_catalog_identity';
 import { seedInitialCategories } from './003_seed_categories';
+import { addCategoryDescriptions } from './004_add_category_descriptions';
 
 type MigrationConnection = Pick<SQLiteDatabase, 'execAsync' | 'runAsync'>;
 
@@ -15,6 +16,7 @@ const MIGRATIONS: readonly Migration[] = [
   { version: 1, up: createInitialSchema },
   { version: 2, up: applyCatalogIdentityRules, requiresForeignKeysOff: true },
   { version: 3, up: seedInitialCategories },
+  { version: 4, up: addCategoryDescriptions },
 ];
 
 const DATABASE_VERSION = MIGRATIONS.at(-1)?.version ?? 0;
