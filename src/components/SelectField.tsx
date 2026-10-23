@@ -8,6 +8,7 @@ type SelectFieldProps = {
   onPress: () => void;
   disabled?: boolean;
   error?: string;
+  required?: boolean;
 };
 
 export function SelectField({
@@ -17,10 +18,11 @@ export function SelectField({
   onPress,
   disabled = false,
   error,
+  required = false,
 }: SelectFieldProps) {
   return (
     <View style={styles.field}>
-      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.label}>{required ? `${label} *` : label}</Text>
       <Pressable
         accessibilityLabel={label}
         accessibilityRole="button"

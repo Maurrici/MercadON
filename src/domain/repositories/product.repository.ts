@@ -6,7 +6,7 @@ export type ProductListItem = Product & { categoryName: string | null };
 
 export type ProductIdentity = Pick<
   Product,
-  'name' | 'brand' | 'packageQuantityMilli' | 'packageUnit'
+  'name' | 'brand' | 'commercializationType' | 'packageQuantityMilli' | 'packageUnit'
 >;
 
 export type SaveProductRecord = ProductIdentity & {
@@ -34,6 +34,7 @@ export type ProductRepository = {
 export type ProductFormInput = {
   name: string;
   brand: string;
+  commercializationType: Product['commercializationType'];
   packageQuantity: string;
   packageUnit: MeasurementUnit | null;
   categoryId: UUID | null;

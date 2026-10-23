@@ -14,6 +14,16 @@ const invalidProductCases: [string, Partial<ProductFormInput>, keyof ProductForm
   ['quantidade zero', { packageQuantity: '0' }, 'packageQuantity'],
   ['quantidade negativa', { packageQuantity: '-1' }, 'packageQuantity'],
   ['unidade fracionária', { packageQuantity: '1,5', packageUnit: 'UNIT' }, 'packageQuantity'],
+  [
+    'quantidade de embalagem em produto variável',
+    { commercializationType: 'VARIABLE', packageQuantity: '1', packageUnit: 'KG' },
+    'packageQuantity',
+  ],
+  [
+    'produto variável sem unidade',
+    { commercializationType: 'VARIABLE', packageQuantity: '', packageUnit: null },
+    'packageUnit',
+  ],
 ];
 
 function createHarness() {
@@ -150,5 +160,45 @@ describe('ProductService', () => {
       status: 'saved',
       product: expect.objectContaining({ packageQuantityMilli: 1250, packageUnit: 'L' }),
     });
+  });
+
+  it('cadastra produto de medida variável sem quantidade fixa de embalagem', async () => {
+    const { service } = createHarness();
+
+    const result = await service.save(
+      makeProductInput({
+        name: 'Carne bovina',
+        commercializationType: 'VARIABLE',
+        packageQuantity: '',
+        packageUnit: 'KG',
+      }),
+    );
+
+    expect(result).toEqual({
+      status: 'saved',
+      product: expect.objectContaining({
+        commercializationType: 'VARIABLE',
+        packageQuantityMilli: null,
+        packageUnit: 'KG',
+      }),
+    });
+  });
+
+  it('diferencia produtos iguais com formas de comercialização diferentes', async () => {
+    const { service } = createHarness();
+    await service.save(
+      makeProductInput({ packageQuantity: '', packageUnit: null, commercializationType: 'FIXED' }),
+    );
+
+    const result = await service.save(
+      makeProductInput({
+        commercializationType: 'VARIABLE',
+        packageQuantity: '',
+        packageUnit: 'KG',
+      }),
+    );
+
+    expect(result.status).toBe('saved');
+    await expect(service.listProducts()).resolves.toHaveLength(2);
   });
 });

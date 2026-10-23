@@ -38,6 +38,7 @@ const UNIT_OPTIONS = MEASUREMENT_UNITS.map((unit) => ({
 const EMPTY_FORM: ProductFormValues = {
   name: '',
   brand: '',
+  commercializationType: 'FIXED',
   packageQuantity: '',
   packageUnit: null,
   categoryId: null,
@@ -134,6 +135,7 @@ export default function ProductsScreen() {
     setFormValues({
       name: selectedProduct.name,
       brand: selectedProduct.brand ?? '',
+      commercializationType: selectedProduct.commercializationType,
       packageQuantity: formatPackageQuantity(selectedProduct.packageQuantityMilli),
       packageUnit: selectedProduct.packageUnit,
       categoryId: selectedProduct.categoryId,
@@ -147,8 +149,21 @@ export default function ProductsScreen() {
     field: Key,
     value: ProductFormValues[Key],
   ) {
-    setFormValues((current) => ({ ...current, [field]: value }));
-    setFormErrors((current) => ({ ...current, [field]: undefined }));
+    setFormValues((current) =>
+      field === 'commercializationType' && current.commercializationType !== value
+        ? {
+            ...current,
+            commercializationType: value as ProductFormValues['commercializationType'],
+            packageQuantity: '',
+            packageUnit: null,
+          }
+        : { ...current, [field]: value },
+    );
+    setFormErrors((current) =>
+      field === 'commercializationType'
+        ? { ...current, packageQuantity: undefined, packageUnit: undefined }
+        : { ...current, [field]: undefined },
+    );
   }
 
   async function handleSubmit() {
@@ -370,7 +385,7 @@ export default function ProductsScreen() {
       <BottomSheet onRequestClose={() => setDuplicateVisible(false)} visible={duplicateVisible}>
         <Text style={styles.noticeTitle}>Produto já cadastrado</Text>
         <Text style={styles.noticeText}>
-          Já existe um produto com a mesma combinação de nome, marca, quantidade e unidade.
+          Já existe um produto com a mesma combinação de nome, marca e forma de comercialização.
         </Text>
         <Text style={styles.noticeText}>Altere os detalhes ou volte ao produto existente.</Text>
         <Pressable
@@ -388,9 +403,15 @@ export default function ProductsScreen() {
 function formatDetails(product: ProductListItem) {
   const unit = product.packageUnit ? getMeasurementUnitLabel(product.packageUnit) : null;
   const quantity = formatPackageQuantity(product.packageQuantityMilli);
-  return [product.brand, quantity && unit ? `${quantity} ${unit}` : null, product.categoryName]
-    .filter(Boolean)
-    .join(' · ');
+  const commercialization =
+    product.commercializationType === 'VARIABLE'
+      ? unit
+        ? `Vendido por ${unit}`
+        : null
+      : quantity && unit
+        ? `${quantity} ${unit}`
+        : null;
+  return [product.brand, commercialization, product.categoryName].filter(Boolean).join(' · ');
 }
 
 function formatProductCount(count: number): string {

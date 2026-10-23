@@ -8,6 +8,7 @@ const row = {
   brand: 'Marca A',
   category_id: 'category-food',
   category_name: 'Alimentos',
+  commercialization_type: 'FIXED' as const,
   package_quantity_milli: 1000,
   package_unit: 'KG' as const,
   created_at: '2026-10-21T12:00:00.000Z',
@@ -38,6 +39,7 @@ describe('SQLite ProductRepository', () => {
         brand: 'Marca A',
         categoryId: 'category-food',
         categoryName: 'Alimentos',
+        commercializationType: 'FIXED',
         packageQuantityMilli: 1000,
         packageUnit: 'KG',
         createdAt: row.created_at,
@@ -54,6 +56,7 @@ describe('SQLite ProductRepository', () => {
       {
         name: 'Arroz',
         brand: 'Marca A',
+        commercializationType: 'FIXED',
         packageQuantityMilli: 1000,
         packageUnit: 'KG',
       },
@@ -65,6 +68,7 @@ describe('SQLite ProductRepository', () => {
       expect.objectContaining({
         $name: 'Arroz',
         $brand: 'Marca A',
+        $commercializationType: 'FIXED',
         $packageQuantityMilli: 1000,
         $packageUnit: 'KG',
         $excludeId: 'product-2',
@@ -80,6 +84,7 @@ describe('SQLite ProductRepository', () => {
       name: row.name,
       brand: row.brand,
       categoryId: row.category_id,
+      commercializationType: row.commercialization_type,
       packageQuantityMilli: row.package_quantity_milli,
       packageUnit: row.package_unit,
       createdAt: row.created_at,
@@ -91,6 +96,7 @@ describe('SQLite ProductRepository', () => {
       expect.objectContaining({
         $id: row.id,
         $categoryId: row.category_id,
+        $commercializationType: 'FIXED',
         $packageQuantityMilli: 1000,
       }),
     );
