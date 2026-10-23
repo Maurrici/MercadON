@@ -4,6 +4,7 @@ export function makeProductInput(overrides: Partial<ProductFormInput> = {}): Pro
   return {
     name: 'Arroz',
     brand: 'Marca A',
+    commercializationType: 'FIXED',
     packageQuantity: '1',
     packageUnit: 'KG',
     categoryId: 'category-food',

@@ -1,4 +1,5 @@
 import type { MeasurementUnit } from '@/domain/enums/MeasurementUnit';
+import type { ProductCommercializationType } from '@/domain/enums/ProductCommercializationType';
 import type { ISODateTime, UUID } from '@/domain/types';
 
 export type Product = {
@@ -7,6 +8,7 @@ export type Product = {
 
   brand: string | null;
   categoryId: UUID | null;
+  commercializationType: ProductCommercializationType;
 
   packageQuantityMilli: number | null;
   packageUnit: MeasurementUnit | null;

@@ -87,13 +87,19 @@ function normalizeProductInput(input: ProductFormInput) {
 
   if (!name) errors.name = 'Informe o nome do produto.';
   if (input.brand.length > 0 && !brand) errors.brand = 'Informe uma marca válida.';
-  if (hasQuantity !== hasUnit) {
-    if (!hasQuantity) errors.packageQuantity = 'Informe a quantidade.';
-    if (!hasUnit) errors.packageUnit = 'Selecione a unidade.';
+  if (input.commercializationType === 'FIXED' && hasQuantity !== hasUnit) {
+    if (!hasQuantity) errors.packageQuantity = 'Informe a quantidade da embalagem.';
+    if (!hasUnit) errors.packageUnit = 'Selecione a unidade da embalagem.';
+  }
+  if (input.commercializationType === 'VARIABLE') {
+    if (hasQuantity) {
+      errors.packageQuantity = 'Produtos de medida variável não possuem embalagem fixa.';
+    }
+    if (!hasUnit) errors.packageUnit = 'Selecione a unidade de medida.';
   }
 
   let packageQuantityMilli: number | null = null;
-  if (hasQuantity) {
+  if (input.commercializationType === 'FIXED' && hasQuantity) {
     const quantity = Number(quantityText.replace(',', '.'));
     if (!Number.isFinite(quantity) || quantity <= 0) {
       errors.packageQuantity = 'Informe uma quantidade maior que zero.';
@@ -114,6 +120,7 @@ function normalizeProductInput(input: ProductFormInput) {
     name,
     brand,
     categoryId: input.categoryId,
+    commercializationType: input.commercializationType,
     packageQuantityMilli,
     packageUnit: input.packageUnit,
   };

@@ -3,6 +3,7 @@ import type { SQLiteDatabase } from 'expo-sqlite';
 import { applyCatalogIdentityRules } from './002_catalog_identity';
 import { seedInitialCategories } from './003_seed_categories';
 import { addCategoryDescriptions } from './004_add_category_descriptions';
+import { addProductCommercializationType } from './005_add_product_commercialization_type';
 
 type MigrationConnection = Pick<SQLiteDatabase, 'execAsync' | 'runAsync'>;
 
@@ -17,6 +18,7 @@ const MIGRATIONS: readonly Migration[] = [
   { version: 2, up: applyCatalogIdentityRules, requiresForeignKeysOff: true },
   { version: 3, up: seedInitialCategories },
   { version: 4, up: addCategoryDescriptions },
+  { version: 5, up: addProductCommercializationType, requiresForeignKeysOff: true },
 ];
 
 const DATABASE_VERSION = MIGRATIONS.at(-1)?.version ?? 0;
@@ -60,6 +62,21 @@ export async function migrateDatabase(database: SQLiteDatabase): Promise<void> {
     try {
       await database.withExclusiveTransactionAsync(async (txn) => {
         await migration.up(txn);
+
+        if (disableForeignKeys) {
+          const violation = await txn.getFirstAsync<{
+            table: string;
+            rowid: number;
+            parent: string;
+            fkid: number;
+          }>('PRAGMA foreign_key_check;');
+
+          if (violation) {
+            throw new Error(
+              `A migration ${migration.version} violou uma foreign key em ${violation.table}.`,
+            );
+          }
+        }
 
         await txn.execAsync(`PRAGMA user_version = ${migration.version};`);
       });

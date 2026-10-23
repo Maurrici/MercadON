@@ -23,6 +23,7 @@ export class InMemoryProductRepository implements ProductRepository {
         candidate.id !== excludeId &&
         normalizeText(candidate.name) === normalizeText(identity.name) &&
         normalizeText(candidate.brand) === normalizeText(identity.brand) &&
+        candidate.commercializationType === identity.commercializationType &&
         candidate.packageQuantityMilli === identity.packageQuantityMilli &&
         candidate.packageUnit === identity.packageUnit,
     );
