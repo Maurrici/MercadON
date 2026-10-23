@@ -24,11 +24,11 @@
 
 ## Exemplos de base
 
-| Produto | Situação | Base comparável |
-| --- | --- | --- |
-| Café, embalagem de 500 g | 2 pacotes por R$ 20,00 cada | R$ 20,00/pacote |
-| Carne | 1,275 kg, R$ 50,87 pagos no total | R$ 50,87 ÷ 1,275 kg = preço por kg |
-| Detergente | 3 unidades | Preço por unidade de detergente |
+| Produto                  | Situação                          | Base comparável                    |
+| ------------------------ | --------------------------------- | ---------------------------------- |
+| Café, embalagem de 500 g | 2 pacotes por R$ 20,00 cada       | R$ 20,00/pacote                    |
+| Carne                    | 1,275 kg, R$ 50,87 pagos no total | R$ 50,87 ÷ 1,275 kg = preço por kg |
+| Detergente               | 3 unidades                        | Preço por unidade de detergente    |
 
 ## Notas de consistência
 

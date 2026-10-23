@@ -5,16 +5,16 @@
 
 ## Índice
 
-| Documento | Assunto |
-| --- | --- |
-| [01 — Princípios e dados](01-principios-e-dados.md) | Fundamentos, entidades e integridade |
-| [02 — Produtos](02-produtos.md) | Cadastro, comercialização, proteção histórica e exclusão |
-| [03 — Mercados, categorias e busca](03-mercados-categorias-e-busca.md) | Catálogo auxiliar, busca e filtros |
-| [04 — Ciclo da compra](04-ciclo-da-compra.md) | Início, rascunho, retomada, finalização e descarte |
-| [05 — Itens, quantidades e preços](05-itens-e-precos.md) | Inclusão, cálculo, comparação e carrinho |
-| [06 — Compras concluídas](06-compras-concluidas.md) | Listagem, correção, exclusão e histórico de gastos |
-| [07 — Experiência MVP](07-experiencia-mvp.md) | Padrões de interação já acordados |
-| [08 — Pendências e divergências](08-pendencias-e-divergencias.md) | Pontos técnicos ainda não alinhados ao código e decisões em aberto |
+| Documento                                                              | Assunto                                                            |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [01 — Princípios e dados](01-principios-e-dados.md)                    | Fundamentos, entidades e integridade                               |
+| [02 — Produtos](02-produtos.md)                                        | Cadastro, comercialização, proteção histórica e exclusão           |
+| [03 — Mercados, categorias e busca](03-mercados-categorias-e-busca.md) | Catálogo auxiliar, busca e filtros                                 |
+| [04 — Ciclo da compra](04-ciclo-da-compra.md)                          | Início, rascunho, retomada, finalização e descarte                 |
+| [05 — Itens, quantidades e preços](05-itens-e-precos.md)               | Inclusão, cálculo, comparação e carrinho                           |
+| [06 — Compras concluídas](06-compras-concluidas.md)                    | Listagem, correção, exclusão e histórico de gastos                 |
+| [07 — Experiência MVP](07-experiencia-mvp.md)                          | Padrões de interação já acordados                                  |
+| [08 — Pendências e divergências](08-pendencias-e-divergencias.md)      | Pontos técnicos ainda não alinhados ao código e decisões em aberto |
 
 ## Como ler
 
@@ -41,7 +41,7 @@ Referências principais: [issues do projeto](https://github.com/Maurrici/MercadO
 
 ### Histórico de decisões
 
-| Data | Decisão |
-| --- | --- |
-| 22/10/2026 | Primeira consolidação de regras das milestones 1–3 e das decisões do Product Owner. |
+| Data       | Decisão                                                                                                                                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 22/10/2026 | Primeira consolidação de regras das milestones 1–3 e das decisões do Product Owner.                                                                                                                                     |
 | 22/10/2026 | Proteção definitiva de comercialização/medidas em produtos com compras concluídas; alternativa é criar novo produto. Descartadas propostas anteriores de converter, apagar ou versionar históricos ao editar o produto. |

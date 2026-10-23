@@ -33,11 +33,11 @@
 
 ## Exemplos
 
-| Cadastro | Tipo | Durante a compra | Base de comparação |
-| --- | --- | --- | --- |
-| Café 500 g | Quantidade fixa | 2 pacotes | R$/pacote |
-| Detergente | Quantidade fixa | 2 unidades | R$/unidade |
-| Carne bovina — kg | Medida variável | 1,275 kg | R$/kg |
+| Cadastro          | Tipo            | Durante a compra | Base de comparação |
+| ----------------- | --------------- | ---------------- | ------------------ |
+| Café 500 g        | Quantidade fixa | 2 pacotes        | R$/pacote          |
+| Detergente        | Quantidade fixa | 2 unidades       | R$/unidade         |
+| Carne bovina — kg | Medida variável | 1,275 kg         | R$/kg              |
 
 ## Fontes
 
