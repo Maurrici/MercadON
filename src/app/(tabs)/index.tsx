@@ -27,7 +27,12 @@ export default function HomeScreen() {
           onPress={() => router.push('/markets')}
           title="Mercados"
         />
-        <AccessCard disabled description="Preços e gastos" icon="▤" title="Histórico" />
+        <AccessCard
+          description="Preços e gastos"
+          icon="▤"
+          onPress={() => router.push('/purchases/history')}
+          title="Histórico"
+        />
       </View>
     </Screen>
   );

@@ -19,6 +19,7 @@
 
 - **RN-PRD-010 — Sem compras concluídas:** permite editar normalmente nome, marca, categoria, forma de comercialização e medidas, respeitando as validações.
 - **RN-PRD-011 — Com pelo menos uma compra concluída:** `forma de comercialização`, `quantidade da embalagem`, `unidade da embalagem` e `unidade de medida variável` ficam **protegidas / não editáveis**. Nome, marca e categoria podem ser corrigidos sem alterar fatos históricos.
+- **RN-PRD-011A — Presente em compra em andamento:** aplicar a mesma proteção estrutural enquanto o produto estiver em um item ativo de `DRAFT`. Para alterar a estrutura, remover o item do rascunho ou criar outro produto.
 - **RN-PRD-012 — Alternativa à edição protegida:** oferecer **criar novo produto com os dados preenchidos**, permitindo modificá-los para compras futuras. O original e suas referências históricas continuam intactos. Novo produto recebe UUID próprio e fica sujeito à verificação de duplicidade/restauração.
 - **RN-PRD-013 — Sem reinterpretação retroativa:** é **proibido** converter quantidades antigas, remover itens antigos, reiniciar versões de histórico ou trocar o significado de preços já registrados por uma edição cadastral.
 - **RN-PRD-014 — Proteção no domínio:** o bloqueio deve ser validado no serviço/repositório, não apenas por controles desabilitados na tela.

@@ -1,6 +1,6 @@
 # MercadON — Regras de negócio
 
-> **Decisões vigentes do MVP** · Consolidação: **22/10/2026** · Idioma: pt-BR  
+> **Decisões vigentes do MVP** · Consolidação: **23/10/2026** · Idioma: pt-BR
 > Fonte de verdade para comportamento esperado; **não é declaração de que tudo já está implementado**.
 
 ## Índice
@@ -39,9 +39,13 @@ Referências principais: [issues do projeto](https://github.com/Maurrici/MercadO
 3. Colocar dúvidas técnicas e definições ainda não resolvidas em [08 — Pendências](08-pendencias-e-divergencias.md), **não** misturá-las às regras aprovadas.
 4. Referenciar o documento no Pull Request que implementar ou alterar a regra.
 
+O plano executável da Milestone 3 está em [docs/planejamento/milestone-03.md](../planejamento/milestone-03.md).
+
 ### Histórico de decisões
 
 | Data       | Decisão                                                                                                                                                                                                                 |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 22/10/2026 | Primeira consolidação de regras das milestones 1–3 e das decisões do Product Owner.                                                                                                                                     |
 | 22/10/2026 | Proteção definitiva de comercialização/medidas em produtos com compras concluídas; alternativa é criar novo produto. Descartadas propostas anteriores de converter, apagar ou versionar históricos ao editar o produto. |
+| 23/10/2026 | Mercado passou a ser obrigatório em toda compra; removida a opção “Sem mercado”. Para produtos fixos, o preço informado na compra é o preço por unidade comercial.                                                      |
+| 23/10/2026 | Aprovados o bloqueio estrutural de produto presente em `DRAFT`, o bloqueio da remoção do último item concluído e o uso dos nomes cadastrais atuais no histórico.                                                        |

@@ -4,6 +4,7 @@ import { applyCatalogIdentityRules } from './002_catalog_identity';
 import { seedInitialCategories } from './003_seed_categories';
 import { addCategoryDescriptions } from './004_add_category_descriptions';
 import { addProductCommercializationType } from './005_add_product_commercialization_type';
+import { createPurchaseFoundation } from './006_purchase_foundation';
 
 type MigrationConnection = Pick<SQLiteDatabase, 'execAsync' | 'runAsync'>;
 
@@ -19,6 +20,7 @@ const MIGRATIONS: readonly Migration[] = [
   { version: 3, up: seedInitialCategories },
   { version: 4, up: addCategoryDescriptions },
   { version: 5, up: addProductCommercializationType, requiresForeignKeysOff: true },
+  { version: 6, up: createPurchaseFoundation, requiresForeignKeysOff: true },
 ];
 
 const DATABASE_VERSION = MIGRATIONS.at(-1)?.version ?? 0;

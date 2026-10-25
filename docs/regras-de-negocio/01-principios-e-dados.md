@@ -10,7 +10,7 @@
 ## Entidades e relacionamentos
 
 - **RN-005 — Entidades:** `Market`, `Category`, `Product`, `Purchase`, `PurchaseItem`.
-- **RN-006 — Relações:** `Market 1:N Purchase` (associação opcional na compra); `Purchase 1:N PurchaseItem`; `Product 1:N PurchaseItem`; `Category 1:N Product` (categoria opcional).
+- **RN-006 — Relações:** `Market 1:N Purchase` (toda compra possui um mercado cadastrado); `Purchase 1:N PurchaseItem`; `Product 1:N PurchaseItem`; `Category 1:N Product` (categoria opcional).
 - **RN-007 — Identificação:** entidades persistidas utilizam UUID v4, independentes do SQLite; `createdAt` e `updatedAt` registram timestamps ISO 8601 em UTC.
 - **RN-008 — Dinheiro:** preços e valores pagos devem ser preservados em representação inteira em centavos, evitando persistir montantes financeiros em ponto flutuante.
 - **RN-009 — Quantidades:** a representação corrente do domínio utiliza milésimos da unidade (ex.: `1,275 kg = 1275`, `2 un = 2000`); quantidades comerciais por unidade não podem ser fracionárias. Precisão e arredondamento de cálculos intermediários devem ser coerentes; detalhes pendentes estão no documento 08.

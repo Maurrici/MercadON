@@ -2,6 +2,7 @@ import type { Product } from '@/domain/models/Product';
 import type {
   ProductIdentity,
   ProductListItem,
+  ProductPurchaseUsage,
   ProductRepository,
   SaveProductRecord,
   UpdateProductRecord,
@@ -10,11 +11,22 @@ import type { ISODateTime, UUID } from '@/domain/types';
 
 export class InMemoryProductRepository implements ProductRepository {
   private readonly products: Product[] = [];
+  private readonly purchaseUsage = new Map<UUID, ProductPurchaseUsage>();
 
   async listActive(): Promise<ProductListItem[]> {
     return this.products
       .filter((product) => product.deletedAt === null)
       .map((product) => ({ ...product, categoryName: null }));
+  }
+
+  async findListItemById(id: UUID): Promise<ProductListItem | null> {
+    const product = this.products.find((candidate) => candidate.id === id);
+    return product ? { ...product, categoryName: null } : null;
+  }
+
+  async findById(id: UUID): Promise<Product | null> {
+    const product = this.products.find((candidate) => candidate.id === id);
+    return product ? { ...product } : null;
   }
 
   async findByIdentity(identity: ProductIdentity, excludeId?: UUID): Promise<Product | null> {
@@ -29,6 +41,14 @@ export class InMemoryProductRepository implements ProductRepository {
     );
 
     return product ? { ...product } : null;
+  }
+
+  async getPurchaseUsage(id: UUID): Promise<ProductPurchaseUsage> {
+    return this.purchaseUsage.get(id) ?? { inDraft: false, inCompletedPurchase: false };
+  }
+
+  setPurchaseUsage(id: UUID, usage: ProductPurchaseUsage): void {
+    this.purchaseUsage.set(id, usage);
   }
 
   async create(input: SaveProductRecord): Promise<Product> {

@@ -17,6 +17,7 @@ export class MarketValidationError extends Error {
 
 export type MarketService = {
   listMarkets(): Promise<Market[]>;
+  getMarket(marketId: UUID): Promise<Market | null>;
   save(input: MarketFormInput, marketId?: UUID): Promise<SaveMarketResult>;
   delete(marketId: UUID): Promise<void>;
   restore(marketId: UUID): Promise<Market>;
@@ -35,6 +36,7 @@ export function createMarketService({
 }: MarketServiceDependencies): MarketService {
   return {
     listMarkets: () => markets.listActive(),
+    getMarket: (marketId) => markets.findById(marketId),
 
     async save(input, marketId) {
       const normalized = normalizeMarketInput(input);

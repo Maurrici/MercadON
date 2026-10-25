@@ -8,7 +8,7 @@
 2. **Produtos:** `nome` obrigatório. Comercialização **quantidade fixa** (padrão, embalagem opcional) ou **medida variável** (unidade obrigatória, sem embalagem fixa).
 3. **Histórico protegido:** se o produto aparecer em uma compra concluída, **forma de comercialização e medidas não podem ser editadas**. Nome, marca e categoria podem. Oferecer **criar novo produto com dados preenchidos**; preservar o original e as compras antigas.
 4. **Catálogo:** não permitir identidade duplicada; cadastros excluídos logicamente devem oferecer **restauração**. Mercados podem ter nomes de filiais; categorias são predefinidas.
-5. **Compra:** mercado é opcional (`Sem mercado`); criar/selecionar mercado durante o início da compra. **Máximo de uma compra em andamento.**
+5. **Compra:** mercado cadastrado é obrigatório; criar ou selecionar mercado durante a preparação. Não existe `Sem mercado`. **Máximo de uma compra em andamento.**
 6. **Rascunho:** persistir ao iniciar e após cada alteração confirmada; retomar ao abrir o app ou ao tocar **Registrar compra**. Sair da tela não descarta. Descarte exige confirmação.
 7. **Itens:** fixos são comprados por unidade comercial; variáveis pela medida efetivamente adquirida e preço total pago. Um mesmo produto não gera automaticamente duas linhas na mesma compra.
 8. **Preços:** comparar **preço por unidade comercial** (fixo) ou **preço por unidade de medida** (variável), usando a última compra **concluída** daquele produto em qualquer mercado, nunca valores totais incompatíveis.

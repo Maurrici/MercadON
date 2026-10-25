@@ -44,6 +44,16 @@ export function createProductRepository(db: SQLiteDatabase): ProductRepository {
       return rows.map((row) => ({ ...mapProduct(row), categoryName: row.category_name ?? null }));
     },
 
+    async findListItemById(id): Promise<ProductListItem | null> {
+      const row = await db.getFirstAsync<ProductRow>(productSQL.findListItemById, [id]);
+      return row ? { ...mapProduct(row), categoryName: row.category_name ?? null } : null;
+    },
+
+    async findById(id): Promise<Product | null> {
+      const row = await db.getFirstAsync<ProductRow>(productSQL.findById, [id]);
+      return row ? mapProduct(row) : null;
+    },
+
     async findByIdentity(identity: ProductIdentity, excludeId?: string): Promise<Product | null> {
       const row = await db.getFirstAsync<ProductRow>(productSQL.findByIdentity, {
         $name: identity.name,
@@ -54,6 +64,18 @@ export function createProductRepository(db: SQLiteDatabase): ProductRepository {
         $excludeId: excludeId ?? null,
       });
       return row ? mapProduct(row) : null;
+    },
+
+    async getPurchaseUsage(id) {
+      const row = await db.getFirstAsync<{
+        in_draft: number;
+        in_completed_purchase: number;
+      }>(productSQL.getPurchaseUsage, [id, id]);
+
+      return {
+        inDraft: row?.in_draft === 1,
+        inCompletedPurchase: row?.in_completed_purchase === 1,
+      };
     },
 
     async create(input: SaveProductRecord): Promise<Product> {
@@ -137,11 +159,41 @@ const productSQL = {
       AND ($excludeId IS NULL OR id <> $excludeId)
     LIMIT 1;
   `,
+  findListItemById: `
+    SELECT p.id, p.name, p.brand, p.category_id, c.name AS category_name,
+           p.commercialization_type, p.package_quantity_milli, p.package_unit,
+           p.created_at, p.updated_at, p.deleted_at
+    FROM products p
+    LEFT JOIN categories c ON c.id = p.category_id
+    WHERE p.id = ?
+    LIMIT 1;
+  `,
   findById: `
     SELECT id, name, brand, category_id, commercialization_type,
            package_quantity_milli, package_unit,
            created_at, updated_at, deleted_at
     FROM products WHERE id = ? LIMIT 1;
+  `,
+  getPurchaseUsage: `
+    SELECT
+      EXISTS (
+        SELECT 1
+        FROM purchase_items pi
+        INNER JOIN purchases p ON p.id = pi.purchase_id
+        WHERE pi.product_id = ?
+          AND pi.deleted_at IS NULL
+          AND p.deleted_at IS NULL
+          AND p.status = 'DRAFT'
+      ) AS in_draft,
+      EXISTS (
+        SELECT 1
+        FROM purchase_items pi
+        INNER JOIN purchases p ON p.id = pi.purchase_id
+        WHERE pi.product_id = ?
+          AND pi.deleted_at IS NULL
+          AND p.deleted_at IS NULL
+          AND p.status = 'COMPLETED'
+      ) AS in_completed_purchase;
   `,
   create: `
     INSERT INTO products (

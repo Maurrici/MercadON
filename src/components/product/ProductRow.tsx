@@ -4,12 +4,13 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 export type ProductRowProps = {
   name: string;
   details?: string | null;
-  onPressActions: () => void;
+  onPress?: () => void;
+  onPressActions?: () => void;
 };
 
-export function ProductRow({ name, details, onPressActions }: ProductRowProps) {
-  return (
-    <View style={styles.container}>
+export function ProductRow({ name, details, onPress, onPressActions }: ProductRowProps) {
+  const content = (
+    <>
       <View style={styles.content}>
         <Text numberOfLines={1} style={styles.name}>
           {name}
@@ -20,16 +21,30 @@ export function ProductRow({ name, details, onPressActions }: ProductRowProps) {
           </Text>
         ) : null}
       </View>
-      <Pressable
-        accessibilityLabel={`Ações de ${name}`}
-        accessibilityRole="button"
-        hitSlop={8}
-        onPress={onPressActions}
-        style={({ pressed }) => [styles.actions, pressed && styles.actionsPressed]}
-      >
-        <Text style={styles.actionsIcon}>⋮</Text>
-      </Pressable>
-    </View>
+      {onPressActions ? (
+        <Pressable
+          accessibilityLabel={`Ações de ${name}`}
+          accessibilityRole="button"
+          hitSlop={8}
+          onPress={onPressActions}
+          style={({ pressed }) => [styles.actions, pressed && styles.actionsPressed]}
+        >
+          <Text style={styles.actionsIcon}>⋮</Text>
+        </Pressable>
+      ) : null}
+    </>
+  );
+
+  if (!onPress) return <View style={styles.container}>{content}</View>;
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [styles.container, pressed && styles.rowPressed]}
+    >
+      {content}
+    </Pressable>
   );
 }
 
@@ -57,5 +72,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
   },
   actionsPressed: { backgroundColor: colors.primarySoft },
+  rowPressed: { backgroundColor: colors.primarySoft },
   actionsIcon: { fontSize: 25, lineHeight: 30, fontWeight: '600', color: colors.textSecondary },
 });
