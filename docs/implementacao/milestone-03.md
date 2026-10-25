@@ -56,13 +56,17 @@ Operações compostas usam transação exclusiva. Finalização exige ao menos u
 
 ## Navegação
 
-- `/(tabs)/purchases`: iniciar ou continuar o rascunho;
+- `/(tabs)/index`: dashboard inicial com quantidade de compras concluídas, produtos ativos e mercados ativos;
+- `/(tabs)/purchases`: aba central destacada para iniciar ou continuar o rascunho;
+- `/(tabs)/menu`: acesso ao gerenciamento de compras concluídas, produtos e mercados; o item Histórico permanece reservado para análises e estatísticas futuras;
 - `/purchases/create`: selecionar/cadastrar mercado e criar o rascunho;
 - `/purchases/[id]`: carrinho persistente;
 - `/purchases/[id]/item`: adicionar ou editar item, também reutilizado pelo histórico;
 - `/purchases/history`: compras concluídas;
 - `/purchases/history/[id]`: detalhe e correções administrativas;
 - `/products`: gerenciamento e filtro por categorias.
+
+A barra de abas aplica explicitamente o inset inferior fornecido por `react-native-safe-area-context`, mantendo ícones, rótulos e conteúdo acima da barra de navegação do Android.
 
 ## Validação automatizada
 
