@@ -22,9 +22,17 @@ export type UpdateProductRecord = ProductIdentity & {
   updatedAt: ISODateTime;
 };
 
+export type ProductPurchaseUsage = {
+  inDraft: boolean;
+  inCompletedPurchase: boolean;
+};
+
 export type ProductRepository = {
   listActive(): Promise<ProductListItem[]>;
+  findListItemById(id: UUID): Promise<ProductListItem | null>;
+  findById(id: UUID): Promise<Product | null>;
   findByIdentity(identity: ProductIdentity, excludeId?: UUID): Promise<Product | null>;
+  getPurchaseUsage(id: UUID): Promise<ProductPurchaseUsage>;
   create(input: SaveProductRecord): Promise<Product>;
   update(input: UpdateProductRecord): Promise<Product>;
   softDelete(id: UUID, deletedAt: ISODateTime): Promise<void>;

@@ -126,6 +126,19 @@ describe('MarketService', () => {
     await expect(service.listMarkets()).resolves.toEqual([]);
   });
 
+  it('recupera mercado arquivado para identificação no histórico', async () => {
+    const { service } = createHarness();
+    const saved = await service.save({ name: 'Assaí' });
+    if (saved.status !== 'saved') throw new Error('Falha ao preparar o teste.');
+    await service.delete(saved.market.id);
+
+    await expect(service.getMarket(saved.market.id)).resolves.toMatchObject({
+      id: saved.market.id,
+      name: 'Assaí',
+      deletedAt: NOW,
+    });
+  });
+
   it('oferece restauração quando o nome pertence a um mercado excluído', async () => {
     const { service } = createHarness();
     const saved = await service.save({ name: 'Assaí' });

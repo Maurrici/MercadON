@@ -54,9 +54,15 @@ export default function RootLayout() {
 
                 <Stack.Screen name="markets/index" options={{ headerShown: false }} />
 
-                <Stack.Screen name="purchases/create" options={{ title: 'Cadastrar compra' }} />
+                <Stack.Screen name="purchases/create" options={{ headerShown: false }} />
 
-                <Stack.Screen name="purchases/[id]" options={{ title: 'Detalhes da compra' }} />
+                <Stack.Screen name="purchases/[id]" options={{ headerShown: false }} />
+
+                <Stack.Screen name="purchases/[id]/item" options={{ headerShown: false }} />
+
+                <Stack.Screen name="purchases/history/index" options={{ headerShown: false }} />
+
+                <Stack.Screen name="purchases/history/[id]" options={{ headerShown: false }} />
               </Stack>
             </SQLiteProvider>
           </Suspense>

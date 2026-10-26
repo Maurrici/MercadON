@@ -3,7 +3,7 @@
 ## Adicionar e editar itens
 
 - **RN-ITM-001 — Busca contextual:** localizar produto existente ou cadastrá-lo rapidamente durante a compra; não obrigar navegação ao gerenciamento.
-- **RN-ITM-002 — Produto de quantidade fixa:** informar **quantidade inteira de unidades comerciais** (pacotes, garrafas, caixas, peças) e preço. Se a embalagem contiver `500 g`, **2 pacotes não significam digitar `1.000 g` no carrinho**.
+- **RN-ITM-002 — Produto de quantidade fixa:** informar **quantidade inteira de unidades comerciais** (inicialmente `1 un`) e **preço por unidade comercial**. Calcular o total do item como `quantidade × preço unitário`. Se a embalagem contiver `500 g`, **2 pacotes não significam digitar `1.000 g` no carrinho**.
 - **RN-ITM-003 — Produto de medida variável:** informar quantidade efetivamente adquirida, possivelmente fracionária, na unidade cadastrada (`kg`, `g`, `L`, `ml` etc.), e **preço total pago**. Exemplo: `1,275 kg` e `R$ 50,87`.
 - **RN-ITM-004 — Item já no carrinho:** não criar automaticamente uma segunda linha para o mesmo produto. Oferecer **Atualizar item**; para **quantidade fixa**, também oferecer **Adicionar +1 unidade**. Para medida variável, usar atualização das quantidades/preços (não `+1`).
 - **RN-ITM-005 — Informações armazenadas:** quantidade efetiva, unidade, valor total pago e base de preço normalizado devem poder ser recuperados sem alterar dados financeiros de compras anteriores.
@@ -34,7 +34,7 @@
 
 - Todos os **montantes pagos** devem preservar precisão em centavos.
 - Os cálculos de normalização e apresentação precisam de política explícita de precisão e arredondamento; não arredondar repetidamente para comparar valores. Ver `PEND-003` no documento 08.
-- A interface exata para informar **preço de produto fixo** (unitário ou total, com o outro derivado) ainda não foi fechada textualmente; não supor que a escolha visual já foi aprovada.
+- Para produtos `FIXED`, o campo de preço recebe **preço por unidade comercial** e o total é derivado. Para produtos `VARIABLE`, o campo recebe **preço total pago** e o preço normalizado é derivado.
 
 ## Fontes
 

@@ -5,13 +5,13 @@
 - **RN-MKT-001 — Cadastro:** `nome` é o único campo obrigatório no MVP. Endereço e geolocalização não são exigidos.
 - **RN-MKT-002 — Identidade:** o nome completo identifica o registro. Impedir dois mercados com o mesmo nome normalizado, sem distinção de maiúsculas/minúsculas. **Não** inferir unidades por regras de nome: `Assaí`, `Assaí Mister Hull` e `Assaí Parangaba` podem ser registros diferentes.
 - **RN-MKT-003 — Exclusão lógica:** a remoção da listagem não deve apagar compras antigas. Ao tentar cadastrar o mesmo mercado previamente excluído, oferecer **restauração**.
-- **RN-MKT-004 — Mercado na compra:** escolher mercado é opcional. O usuário pode selecionar um existente, criar um novo no contexto ou optar explicitamente por **Sem mercado**. Mercado pode ser alterado durante a compra em andamento.
+- **RN-MKT-004 — Mercado na compra:** toda compra deve possuir um mercado cadastrado. O usuário pode selecionar um existente ou criar um novo no contexto, mas não existe a opção **Sem mercado**. O mercado pode ser alterado durante a compra em andamento sem reiniciar os itens.
 
 ## Categorias
 
 - **RN-CAT-001 — MVP:** categorias são **predefinidas**; usuário não precisa nem pode manter um catálogo livre de categorias nesta etapa.
 - **RN-CAT-002 — Produto:** categoria é opcional, e pode ser atualizada sem mudar dados financeiros históricos.
-- **RN-CAT-003 — Catálogo inicial presente no código:** **Alimentos, Bebidas, Higiene, Limpeza, Outros**. A lista da issue #14 era ilustrativa, não o conjunto efetivo do seed.
+- **RN-CAT-003 — Catálogo vigente:** **Hortifruti; Carnes, aves e peixes; Frios, laticínios e ovos; Padaria; Mercearia e despensa; Congelados e prontos; Doces, biscoitos e snacks; Bebidas; Limpeza; Higiene e cuidados pessoais; Bebê; Pet; Outros / Casa**. Cada categoria possui uma descrição curta com exemplos para orientar a seleção.
 - **RN-CAT-004 — Unidades:** seleção dentro da lista controlada `un`, `g`, `kg`, `ml`, `L`; não há criação livre de unidades no MVP.
 
 ## Busca e filtros

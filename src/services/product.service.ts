@@ -16,7 +16,17 @@ export type ProductFormErrors = Partial<
 export type SaveProductResult =
   | { status: 'saved'; product: Product }
   | { status: 'duplicate'; product: Product }
-  | { status: 'restorable'; product: Product };
+  | { status: 'restorable'; product: Product }
+  | {
+      status: 'structure_locked';
+      product: Product;
+      reason: 'DRAFT' | 'COMPLETED' | 'DRAFT_AND_COMPLETED';
+    };
+
+export type ProductStructureProtection = Extract<
+  SaveProductResult,
+  { status: 'structure_locked' }
+>['reason'];
 
 export class ProductValidationError extends Error {
   constructor(readonly errors: ProductFormErrors) {
@@ -26,7 +36,9 @@ export class ProductValidationError extends Error {
 
 export type ProductService = {
   listProducts(): Promise<ProductListItem[]>;
+  getProduct(productId: UUID): Promise<ProductListItem | null>;
   listCategories(): Promise<Category[]>;
+  getStructureProtection(productId: UUID): Promise<ProductStructureProtection | null>;
   save(input: ProductFormInput, productId?: UUID): Promise<SaveProductResult>;
   delete(productId: UUID): Promise<void>;
   restore(productId: UUID): Promise<Product>;
@@ -47,10 +59,35 @@ export function createProductService({
 }: ProductServiceDependencies): ProductService {
   return {
     listProducts: () => products.listActive(),
+    getProduct: (productId) => products.findListItemById(productId),
     listCategories: () => categories.listActive(),
+    async getStructureProtection(productId) {
+      const usage = await products.getPurchaseUsage(productId);
+      return getStructureProtectionReason(usage.inDraft, usage.inCompletedPurchase);
+    },
 
     async save(input, productId) {
       const normalized = normalizeProductInput(input);
+
+      if (productId) {
+        const current = await products.findById(productId);
+        if (!current || current.deletedAt) throw new Error('Produto não encontrado para edição.');
+
+        if (hasStructuralChange(current, normalized)) {
+          const usage = await products.getPurchaseUsage(productId);
+
+          const reason = getStructureProtectionReason(usage.inDraft, usage.inCompletedPurchase);
+
+          if (reason) {
+            return {
+              status: 'structure_locked',
+              product: current,
+              reason,
+            };
+          }
+        }
+      }
+
       const conflict = await products.findByIdentity(normalized, productId);
 
       if (conflict) {
@@ -75,6 +112,27 @@ export function createProductService({
     delete: (productId) => products.softDelete(productId, now()),
     restore: (productId) => products.restore(productId, now()),
   };
+}
+
+function getStructureProtectionReason(
+  inDraft: boolean,
+  inCompletedPurchase: boolean,
+): ProductStructureProtection | null {
+  if (inDraft && inCompletedPurchase) return 'DRAFT_AND_COMPLETED';
+  if (inDraft) return 'DRAFT';
+  if (inCompletedPurchase) return 'COMPLETED';
+  return null;
+}
+
+function hasStructuralChange(
+  current: Product,
+  next: Pick<Product, 'commercializationType' | 'packageQuantityMilli' | 'packageUnit'>,
+): boolean {
+  return (
+    current.commercializationType !== next.commercializationType ||
+    current.packageQuantityMilli !== next.packageQuantityMilli ||
+    current.packageUnit !== next.packageUnit
+  );
 }
 
 function normalizeProductInput(input: ProductFormInput) {

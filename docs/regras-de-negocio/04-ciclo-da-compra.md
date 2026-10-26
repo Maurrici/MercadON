@@ -2,9 +2,9 @@
 
 ## Preparação e criação
 
-- **RN-CMP-001 — Início:** ação **Registrar compra** abre preparação curta: selecionar mercado existente, cadastrar novo mercado ou escolher explicitamente **Sem mercado**; confirmar início.
+- **RN-CMP-001 — Início:** a aba **Compras** mostra **Iniciar compra** quando não há rascunho. A preparação permite selecionar um mercado existente ou cadastrar um novo; o mercado é obrigatório e não existe opção **Sem mercado**.
 - **RN-CMP-002 — Limite:** **no máximo uma compra `DRAFT` ativa** por vez. Se já houver uma, a ação de iniciar compra deve **retomá-la**, não criar outra.
-- **RN-CMP-003 — Persistência inicial:** ao confirmar nova compra, criar e persistir imediatamente `DRAFT` no SQLite, com `createdAt` automático e mercado opcional.
+- **RN-CMP-003 — Persistência inicial:** ao confirmar nova compra, criar e persistir imediatamente `DRAFT` no SQLite, com `createdAt` automático e `marketId` obrigatório. Sair da preparação sem confirmar não cria rascunho.
 - **RN-CMP-004 — Mercado alterável:** durante a compra em andamento, permitir trocar o mercado pelo cabeçalho sem descartar ou reiniciar os itens.
 
 ## Uso e persistência
@@ -23,7 +23,7 @@
 
 ## Informações que permanecem consultáveis durante o uso
 
-- Mercado atual ou **Sem mercado**.
+- Mercado atual cadastrado.
 - Total acumulado.
 - Lista de itens em ordem de inclusão.
 - Ação de adicionar produto e acesso à finalização.

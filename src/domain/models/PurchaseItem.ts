@@ -1,18 +1,31 @@
 import type { MeasurementUnit } from '@/domain/enums/MeasurementUnit';
+import type { ProductCommercializationType } from '@/domain/enums/ProductCommercializationType';
 import type { ISODateTime, UUID } from '@/domain/types';
 
-export type PurchaseItem = {
+type PurchaseItemBase = {
   id: UUID;
 
   purchaseId: UUID;
   productId: UUID;
 
   quantityMilli: number;
-  quantityUnit: MeasurementUnit;
-
-  unitPriceCents: number | null;
+  totalPriceCents: number;
 
   createdAt: ISODateTime;
   updatedAt: ISODateTime;
   deletedAt: ISODateTime | null;
 };
+
+export type PurchaseItemPricing =
+  | {
+      commercializationType: Extract<ProductCommercializationType, 'FIXED'>;
+      quantityUnit: Extract<MeasurementUnit, 'UNIT'>;
+      unitPriceCents: number;
+    }
+  | {
+      commercializationType: Extract<ProductCommercializationType, 'VARIABLE'>;
+      quantityUnit: MeasurementUnit;
+      unitPriceCents: null;
+    };
+
+export type PurchaseItem = PurchaseItemBase & PurchaseItemPricing;

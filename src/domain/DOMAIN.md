@@ -1,93 +1,59 @@
-# MercadON — Modelagem de Domínio
+# MercadON — Modelagem de domínio
 
-## Identificadores
+## Identificadores e datas
 
-Todas as entidades persistidas possuem identificadores UUID v4.
+Entidades persistidas usam UUID v4, independentes do SQLite. `createdAt` e `updatedAt` são timestamps ISO 8601 em UTC.
 
-Os identificadores são independentes do SQLite e poderão
-ser utilizados futuramente na sincronização com um backend.
+`Purchase` possui dois estados:
 
-## Entidades
+- `DRAFT`: compra em andamento, com `purchasedAt = null`;
+- `COMPLETED`: compra concluída, com `purchasedAt` preenchido e corrigível pelo usuário.
 
-- Market: estabelecimento comercial.
-- Category: classificação de produtos.
-- Product: cadastro de produto.
-- Purchase: compra em andamento ou finalizada.
-- PurchaseItem: item registrado em uma compra.
+## Entidades e relações
 
-## Relacionamentos
+- `Market 1:N Purchase`; toda compra possui `marketId` obrigatório.
+- `Purchase 1:N PurchaseItem`.
+- `Product 1:N PurchaseItem`.
+- `Category 1:N Product`; categoria é opcional.
 
-- Market 1:N Purchase.
-- Purchase 1:N PurchaseItem.
-- Product 1:N PurchaseItem.
-- Category 1:N Product (associação opcional).
+## Produtos
 
-## Cadastro rápido
+Todo produto possui `commercializationType`:
 
-Mercados e produtos poderão ser cadastrados somente com nome.
+- `FIXED`: comprado por unidades comerciais inteiras. Pode possuir conteúdo de embalagem (`packageQuantityMilli` + `packageUnit`), informado em conjunto, ou ambos nulos;
+- `VARIABLE`: comprado pela medida determinada durante a compra. `packageUnit` é obrigatória e `packageQuantityMilli` é nula.
 
-Identificadores e timestamps serão preenchidos pela aplicação.
+Nome é obrigatório; marca e categoria são opcionais. A identidade considera nome, marca, forma de comercialização, quantidade e unidade aplicáveis. Exclusão é lógica.
 
-Dados complementares dos produtos poderão ser nulos.
+Quando um produto estiver presente em compra concluída, forma de comercialização e medidas estruturais não podem ser alteradas. Nome, marca e categoria permanecem editáveis. Mudança estrutural deve criar outro produto, preservando o original.
 
-## Valores monetários
+## Compras e itens
 
-Valores monetários serão armazenados como inteiros em centavos.
+Existe no máximo uma compra `DRAFT`. Ela é persistida ao confirmar a preparação e após cada alteração de mercado ou item. Sair da tela não descarta o rascunho.
 
-O preço de uma compra pertence ao PurchaseItem.
+Produtos `FIXED` registram quantidade inteira de unidades comerciais e preço por unidade comercial. Produtos `VARIABLE` registram quantidade efetivamente adquirida na unidade cadastrada e preço total pago.
 
-O histórico de preços será reconstruído a partir dos itens
-registrados, sem tabela específica de histórico inicialmente.
+Montantes pagos são preservados como inteiros em centavos. Quantidades usam milésimos da unidade (`2 un = 2000`, `1,275 kg = 1275`). `PurchaseItem` preserva `totalPriceCents` em todos os casos; itens fixos também guardam `unitPriceCents`, enquanto itens variáveis normalizam o total pela quantidade somente para comparação e apresentação.
 
-## Quantidades
+## Histórico e comparação
 
-As quantidades serão armazenadas em milésimos da unidade.
+O histórico é derivado de compras `COMPLETED`; não existe tabela global de preço no MVP.
 
-Exemplos:
+- `FIXED`: comparar preço por unidade comercial.
+- `VARIABLE`: comparar preço normalizado na unidade cadastrada.
+- referência: ocorrência mais recente do mesmo produto em compra concluída, ordenada por `purchasedAt`;
+- rascunhos e totais de linhas com quantidades diferentes não são bases comparáveis.
 
-- 2 UNIT = 2000
-- 0,750 KG = 750
-- 1,500 L = 1500
+Alterações cadastrais não reescrevem quantidade, unidade ou valores de itens históricos. A exclusão de produto ou mercado não pode apagar compras concluídas.
 
-UNIT não permite quantidades fracionárias.
+Compras concluídas permitem corrigir mercado, data, quantidade e preço, além de adicionar e remover itens. O último item não pode ser removido isoladamente; para apagar todo o conteúdo, a compra deve ser excluída definitivamente.
 
-O preço unitário é referente a uma unidade inteira
-da medida registrada em PurchaseItem.quantityUnit.
+## Busca e filtros
 
-Os cálculos monetários deverão utilizar uma política consistente
-de arredondamento para centavos.
+A listagem de Produtos combina busca textual com seleção de uma ou mais categorias. O filtro visual é genérico, recebe grupos e opções por propriedades e não conhece tipos do domínio de Produto.
 
-## Datas
+## Arquitetura
 
-createdAt e updatedAt serão timestamps ISO 8601 em UTC.
+Modelos de domínio não dependem de SQLite ou HTTP. Repositories convertem persistência em domínio; services aplicam validações e regras; hooks conectam serviços às telas do Expo Router.
 
-DRAFT: purchasedAt é null.
-COMPLETED: purchasedAt contém a data/hora de finalização.
-
-O usuário poderá corrigir purchasedAt posteriormente.
-
-## Histórico
-
-O histórico utilizará os dados atuais do cadastro para
-exibir nomes de mercados e produtos.
-
-Alterações nos nomes serão refletidas nas consultas históricas.
-
-Valores, quantidades e unidades registrados nos itens
-não serão alterados por modificações cadastrais.
-
-Alterações que transformem um produto em outro produto
-devem resultar em um novo cadastro.
-
-A exclusão de cadastros referenciados por compras históricas
-não poderá eliminar acidentalmente o histórico.
-
-## Persistência
-
-Os modelos de domínio não dependem de SQLite ou HTTP.
-
-Os repositories serão responsáveis pela conversão
-entre representações de persistência e modelos de domínio.
-
-A criação de tabelas e migrations será realizada
-em uma task posterior.
+As regras completas e pendências vigentes estão em [`docs/regras-de-negocio`](../../docs/regras-de-negocio/README.md).

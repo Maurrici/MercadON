@@ -1,5 +1,6 @@
 import type { CategoryRepository } from '@/domain/repositories/category.repository';
 import type { ProductFormInput } from '@/domain/repositories/product.repository';
+import type { ProductPurchaseUsage } from '@/domain/repositories/product.repository';
 import { createProductService } from '@/services/product.service';
 import { describe, expect, it } from '@jest/globals';
 import { InMemoryProductRepository } from '../helpers/in-memory-product.repository';
@@ -117,6 +118,18 @@ describe('ProductService', () => {
     });
   });
 
+  it('recupera produto arquivado para identificação no histórico', async () => {
+    const { service } = createHarness();
+    const saved = await service.save(makeProductInput());
+    if (saved.status !== 'saved') throw new Error('Falha ao preparar o teste.');
+    await service.delete(saved.product.id);
+
+    await expect(service.getProduct(saved.product.id)).resolves.toMatchObject({
+      id: saved.product.id,
+      deletedAt: NOW,
+    });
+  });
+
   it('permite salvar uma edição sem conflitar com o próprio produto', async () => {
     const { service } = createHarness();
     const saved = await service.save(makeProductInput());
@@ -126,6 +139,105 @@ describe('ProductService', () => {
 
     expect(result.status).toBe('saved');
     await expect(service.listProducts()).resolves.toHaveLength(1);
+  });
+
+  it.each<[string, ProductPurchaseUsage, 'DRAFT' | 'COMPLETED' | 'DRAFT_AND_COMPLETED']>([
+    ['rascunho', { inDraft: true, inCompletedPurchase: false }, 'DRAFT'],
+    ['histórico', { inDraft: false, inCompletedPurchase: true }, 'COMPLETED'],
+    ['rascunho e histórico', { inDraft: true, inCompletedPurchase: true }, 'DRAFT_AND_COMPLETED'],
+  ])('bloqueia alteração estrutural quando o produto está em %s', async (_, usage, reason) => {
+    const { products, service } = createHarness();
+    const saved = await service.save(makeProductInput());
+    if (saved.status !== 'saved') throw new Error('Falha ao preparar o teste.');
+    products.setPurchaseUsage(saved.product.id, usage);
+
+    const result = await service.save(makeProductInput({ packageQuantity: '2' }), saved.product.id);
+
+    expect(result).toEqual({
+      status: 'structure_locked',
+      product: saved.product,
+      reason,
+    });
+    await expect(products.findById(saved.product.id)).resolves.toMatchObject({
+      packageQuantityMilli: saved.product.packageQuantityMilli,
+    });
+  });
+
+  it('mantém nome, marca e categoria editáveis mesmo com vínculo histórico', async () => {
+    const { products, service } = createHarness();
+    const saved = await service.save(makeProductInput());
+    if (saved.status !== 'saved') throw new Error('Falha ao preparar o teste.');
+    products.setPurchaseUsage(saved.product.id, {
+      inDraft: true,
+      inCompletedPurchase: true,
+    });
+
+    const result = await service.save(
+      makeProductInput({ name: 'Arroz integral', brand: 'Marca B', categoryId: 'category-2' }),
+      saved.product.id,
+    );
+
+    expect(result).toEqual({
+      status: 'saved',
+      product: expect.objectContaining({
+        name: 'Arroz integral',
+        brand: 'Marca B',
+        categoryId: 'category-2',
+      }),
+    });
+  });
+
+  it('expõe o motivo da proteção para o formulário de edição', async () => {
+    const { products, service } = createHarness();
+    const saved = await service.save(makeProductInput());
+    if (saved.status !== 'saved') throw new Error('Falha ao preparar o teste.');
+    products.setPurchaseUsage(saved.product.id, {
+      inDraft: false,
+      inCompletedPurchase: true,
+    });
+
+    await expect(service.getStructureProtection(saved.product.id)).resolves.toBe('COMPLETED');
+  });
+
+  it('cria outro produto com novo UUID sem alterar o produto protegido', async () => {
+    const { products, service } = createHarness();
+    const original = await service.save(makeProductInput());
+    if (original.status !== 'saved') throw new Error('Falha ao preparar o teste.');
+    products.setPurchaseUsage(original.product.id, {
+      inDraft: false,
+      inCompletedPurchase: true,
+    });
+
+    const created = await service.save(
+      makeProductInput({
+        name: 'Arroz a granel',
+        commercializationType: 'VARIABLE',
+        packageQuantity: '',
+        packageUnit: 'KG',
+      }),
+    );
+
+    expect(created).toEqual({
+      status: 'saved',
+      product: expect.objectContaining({
+        id: 'product-2',
+        commercializationType: 'VARIABLE',
+      }),
+    });
+    await expect(products.findById(original.product.id)).resolves.toEqual(original.product);
+  });
+
+  it('permite alteração estrutural quando o produto não está vinculado a compra ativa', async () => {
+    const { service } = createHarness();
+    const saved = await service.save(makeProductInput());
+    if (saved.status !== 'saved') throw new Error('Falha ao preparar o teste.');
+
+    const result = await service.save(makeProductInput({ packageQuantity: '2' }), saved.product.id);
+
+    expect(result).toEqual({
+      status: 'saved',
+      product: expect.objectContaining({ packageQuantityMilli: 2000 }),
+    });
   });
 
   it('barra uma edição que assumiria a identidade de outro produto', async () => {

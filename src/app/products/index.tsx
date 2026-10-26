@@ -3,6 +3,8 @@ import { BottomSheet } from '@/components/BottomSheet';
 import { ConfirmationSheet } from '@/components/ConfirmationSheet';
 import { EmptyState } from '@/components/EmptyState';
 import { FeedbackToast } from '@/components/FeedbackToast';
+import { FilterButton } from '@/components/FilterButton';
+import { MultiSelectFilterSheet } from '@/components/MultiSelectFilterSheet';
 import { OptionPickerItem, OptionPickerSheet } from '@/components/OptionPickerSheet';
 import { SearchInput } from '@/components/SearchInput';
 import {
@@ -19,8 +21,17 @@ import {
 } from '@/domain/enums/MeasurementUnit';
 import type { Category } from '@/domain/models/Category';
 import type { ProductListItem } from '@/domain/repositories/product.repository';
+import {
+  filterProducts,
+  formatProductDetails,
+  toProductFormValues,
+} from '@/features/products/presentation';
 import { useProductService } from '@/hooks/useProductService';
-import { formatPackageQuantity, ProductValidationError } from '@/services/product.service';
+import {
+  formatPackageQuantity,
+  ProductStructureProtection,
+  ProductValidationError,
+} from '@/services/product.service';
 import { colors, spacing, typography } from '@/theme';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -51,9 +62,15 @@ export default function ProductsScreen() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [query, setQuery] = useState('');
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [draftCategoryIds, setDraftCategoryIds] = useState<string[]>([]);
+  const [filterVisible, setFilterVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductListItem | null>(null);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [restoreProductId, setRestoreProductId] = useState<string | null>(null);
+  const [structureProtection, setStructureProtection] = useState<ProductStructureProtection | null>(
+    null,
+  );
   const [formValues, setFormValues] = useState<ProductFormValues>(EMPTY_FORM);
   const [formErrors, setFormErrors] = useState<Partial<Record<keyof ProductFormValues, string>>>(
     {},
@@ -94,14 +111,19 @@ export default function ProductsScreen() {
   }, [feedback]);
 
   const filteredProducts = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase('pt-BR');
-    if (!normalizedQuery) return products;
-    return products.filter((product) =>
-      [product.name, product.brand, product.categoryName].some((value) =>
-        value?.toLocaleLowerCase('pt-BR').includes(normalizedQuery),
-      ),
-    );
-  }, [products, query]);
+    return filterProducts(products, query, selectedCategoryIds);
+  }, [products, query, selectedCategoryIds]);
+
+  const filterGroups = useMemo(
+    () => [
+      {
+        key: 'categories',
+        title: 'Categorias',
+        options: categories.map((category) => ({ value: category.id, label: category.name })),
+      },
+    ],
+    [categories],
+  );
 
   const categoryOptions = useMemo(
     () =>
@@ -119,9 +141,27 @@ export default function ProductsScreen() {
 
   function openCreateForm() {
     setEditingProductId(null);
+    setStructureProtection(null);
     setFormValues(EMPTY_FORM);
     setFormErrors({});
     setFormVisible(true);
+  }
+
+  function openFilters() {
+    setDraftCategoryIds(selectedCategoryIds);
+    setFilterVisible(true);
+  }
+
+  function toggleFilter(groupKey: string, value: string) {
+    if (groupKey !== 'categories') return;
+    setDraftCategoryIds((current) =>
+      current.includes(value) ? current.filter((id) => id !== value) : [...current, value],
+    );
+  }
+
+  function applyFilters() {
+    setSelectedCategoryIds(draftCategoryIds);
+    setFilterVisible(false);
   }
 
   function openActions(product: ProductListItem) {
@@ -129,20 +169,26 @@ export default function ProductsScreen() {
     setActionsVisible(true);
   }
 
-  function openEditForm() {
+  async function openEditForm() {
     if (!selectedProduct) return;
-    setEditingProductId(selectedProduct.id);
-    setFormValues({
-      name: selectedProduct.name,
-      brand: selectedProduct.brand ?? '',
-      commercializationType: selectedProduct.commercializationType,
-      packageQuantity: formatPackageQuantity(selectedProduct.packageQuantityMilli),
-      packageUnit: selectedProduct.packageUnit,
-      categoryId: selectedProduct.categoryId,
-    });
+    try {
+      const protection = await productService.getStructureProtection(selectedProduct.id);
+      setEditingProductId(selectedProduct.id);
+      setStructureProtection(protection);
+      setFormValues(toProductFormValues(selectedProduct));
+      setFormErrors({});
+      setActionsVisible(false);
+      setFormVisible(true);
+    } catch {
+      setActionsVisible(false);
+      setFeedback({ tone: 'danger', message: 'Não foi possível abrir o produto para edição' });
+    }
+  }
+
+  function createNewFromSelectedProduct() {
+    setEditingProductId(null);
+    setStructureProtection(null);
     setFormErrors({});
-    setActionsVisible(false);
-    setFormVisible(true);
   }
 
   function changeFormField<Key extends keyof ProductFormValues>(
@@ -177,6 +223,20 @@ export default function ProductsScreen() {
       if (result.status === 'restorable') {
         setRestoreProductId(result.product.id);
         setRestoreVisible(true);
+        return;
+      }
+      if (result.status === 'structure_locked') {
+        setStructureProtection(result.reason);
+        setFormValues((current) => ({
+          ...current,
+          commercializationType: result.product.commercializationType,
+          packageQuantity: formatPackageQuantity(result.product.packageQuantityMilli),
+          packageUnit: result.product.packageUnit,
+        }));
+        setFeedback({
+          tone: 'warning',
+          message: 'As informações de compra deste produto estão protegidas',
+        });
         return;
       }
 
@@ -264,12 +324,17 @@ export default function ProductsScreen() {
       </View>
 
       <View style={styles.content}>
-        <SearchInput
-          accessibilityLabel="Buscar produtos"
-          onChangeText={setQuery}
-          placeholder="Buscar produtos..."
-          value={query}
-        />
+        <View style={styles.searchRow}>
+          <View style={styles.searchField}>
+            <SearchInput
+              accessibilityLabel="Buscar produtos"
+              onChangeText={setQuery}
+              placeholder="Buscar produtos..."
+              value={query}
+            />
+          </View>
+          <FilterButton activeCount={selectedCategoryIds.length} onPress={openFilters} />
+        </View>
 
         {loading ? (
           <View style={styles.loading}>
@@ -285,7 +350,7 @@ export default function ProductsScreen() {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <ProductRow
-                  details={formatDetails(item)}
+                  details={formatProductDetails(item)}
                   name={item.name}
                   onPressActions={() => openActions(item)}
                 />
@@ -297,12 +362,16 @@ export default function ProductsScreen() {
           <View style={styles.emptyContainer}>
             <EmptyState
               description={
-                query
-                  ? 'Tente outro termo ou cadastre um produto.'
+                query || selectedCategoryIds.length > 0
+                  ? 'Ajuste a busca ou os filtros para encontrar outros produtos.'
                   : 'Cadastre os produtos que você mais compra.'
               }
-              icon={query ? '⌕' : '□'}
-              title={query ? 'Nenhum produto encontrado' : 'Ainda não há produtos'}
+              icon={query || selectedCategoryIds.length > 0 ? '⌕' : '□'}
+              title={
+                query || selectedCategoryIds.length > 0
+                  ? 'Nenhum produto encontrado'
+                  : 'Ainda não há produtos'
+              }
             />
           </View>
         )}
@@ -313,14 +382,24 @@ export default function ProductsScreen() {
         </View>
       </View>
 
+      <MultiSelectFilterSheet
+        groups={filterGroups}
+        onApply={applyFilters}
+        onClear={() => setDraftCategoryIds([])}
+        onRequestClose={() => setFilterVisible(false)}
+        onToggle={toggleFilter}
+        selectedValues={{ categories: draftCategoryIds }}
+        visible={filterVisible}
+      />
+
       <ProductActionSheet
         onDelete={() => {
           setActionsVisible(false);
           setDeleteVisible(true);
         }}
-        onEdit={openEditForm}
+        onEdit={() => void openEditForm()}
         onRequestClose={() => setActionsVisible(false)}
-        productDetails={selectedProduct ? formatDetails(selectedProduct) : null}
+        productDetails={selectedProduct ? formatProductDetails(selectedProduct) : null}
         productName={selectedProduct?.name ?? ''}
         visible={actionsVisible}
       />
@@ -338,10 +417,12 @@ export default function ProductsScreen() {
           loading={saving}
           onCancel={() => setFormVisible(false)}
           onChangeField={changeFormField}
+          onCreateNewFromProduct={createNewFromSelectedProduct}
           onSelectCategory={() => openPicker('category')}
           onSelectUnit={() => openPicker('unit')}
           onSubmit={() => void handleSubmit()}
           submitLabel={editingProductId ? 'Salvar alterações' : 'Salvar produto'}
+          structureProtection={structureProtection}
           unitLabel={unitLabel}
           values={formValues}
         />
@@ -400,20 +481,6 @@ export default function ProductsScreen() {
   );
 }
 
-function formatDetails(product: ProductListItem) {
-  const unit = product.packageUnit ? getMeasurementUnitLabel(product.packageUnit) : null;
-  const quantity = formatPackageQuantity(product.packageQuantityMilli);
-  const commercialization =
-    product.commercializationType === 'VARIABLE'
-      ? unit
-        ? `Vendido por ${unit}`
-        : null
-      : quantity && unit
-        ? `${quantity} ${unit}`
-        : null;
-  return [product.brand, commercialization, product.categoryName].filter(Boolean).join(' · ');
-}
-
 function formatProductCount(count: number): string {
   return `${count} ${count === 1 ? 'produto' : 'produtos'}`;
 }
@@ -431,6 +498,8 @@ const styles = StyleSheet.create({
   backIcon: { fontSize: 30, lineHeight: 36, color: colors.primary },
   title: { ...typography.title, fontSize: 22, fontWeight: '700', color: colors.textPrimary },
   content: { flex: 1, paddingHorizontal: spacing.lg, paddingTop: 13 },
+  searchRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  searchField: { flex: 1 },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   count: {
     ...typography.caption,

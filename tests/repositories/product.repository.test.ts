@@ -49,6 +49,19 @@ describe('SQLite ProductRepository', () => {
     ]);
   });
 
+  it('recupera dados cadastrais mesmo quando o produto está arquivado', async () => {
+    getFirstAsync.mockResolvedValue({ ...row, deleted_at: row.updated_at });
+
+    await expect(repository.findListItemById('product-1')).resolves.toMatchObject({
+      id: 'product-1',
+      categoryName: 'Alimentos',
+      deletedAt: row.updated_at,
+    });
+    expect(getFirstAsync).toHaveBeenCalledWith(expect.stringContaining('LEFT JOIN categories'), [
+      'product-1',
+    ]);
+  });
+
   it('consulta a identidade completa e exclui o produto em edição', async () => {
     getFirstAsync.mockResolvedValue(null);
 
@@ -74,6 +87,23 @@ describe('SQLite ProductRepository', () => {
         $excludeId: 'product-2',
       }),
     );
+  });
+
+  it('consulta vínculos ativos em rascunhos e compras concluídas', async () => {
+    getFirstAsync.mockResolvedValue({ in_draft: 1, in_completed_purchase: 0 });
+
+    await expect(repository.getPurchaseUsage('product-1')).resolves.toEqual({
+      inDraft: true,
+      inCompletedPurchase: false,
+    });
+    expect(getFirstAsync).toHaveBeenCalledWith(expect.stringContaining("p.status = 'DRAFT'"), [
+      'product-1',
+      'product-1',
+    ]);
+    expect(getFirstAsync).toHaveBeenCalledWith(expect.stringContaining("p.status = 'COMPLETED'"), [
+      'product-1',
+      'product-1',
+    ]);
   });
 
   it('persiste todos os campos normalizados durante o cadastro', async () => {
