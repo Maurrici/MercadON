@@ -63,6 +63,16 @@ export default function RootLayout() {
                 <Stack.Screen name="purchases/history/index" options={{ headerShown: false }} />
 
                 <Stack.Screen name="purchases/history/[id]" options={{ headerShown: false }} />
+
+                <Stack.Screen name="analytics/monthly" options={{ headerShown: false }} />
+
+                <Stack.Screen name="analytics/categories" options={{ headerShown: false }} />
+
+                <Stack.Screen name="analytics/products" options={{ headerShown: false }} />
+
+                <Stack.Screen name="analytics/products/[id]" options={{ headerShown: false }} />
+
+                <Stack.Screen name="analytics/variations" options={{ headerShown: false }} />
               </Stack>
             </SQLiteProvider>
           </Suspense>

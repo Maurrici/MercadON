@@ -352,6 +352,9 @@ export default function ProductsScreen() {
                 <ProductRow
                   details={formatProductDetails(item)}
                   name={item.name}
+                  onPress={() =>
+                    router.push({ pathname: '/analytics/products/[id]', params: { id: item.id } })
+                  }
                   onPressActions={() => openActions(item)}
                 />
               )}

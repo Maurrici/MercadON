@@ -15,7 +15,7 @@ import {
 } from '../helpers/in-memory-purchase.repositories';
 
 const NOW = '2026-10-23T12:00:00.000Z';
-const PREVIOUS_DATE = '2026-10-22T18:00:00.000Z';
+const PREVIOUS_DATE = '2026-10-22';
 
 const FIXED_PRODUCT: Product = {
   id: 'product-coffee',

@@ -1,4 +1,5 @@
 import type { Purchase } from '@/domain/models/Purchase';
+import { isISODate } from '@/domain/date';
 import type {
   PurchaseRepository,
   PurchaseSummary,
@@ -32,7 +33,7 @@ function mapPurchase(row: PurchaseRow): Purchase {
     return { ...base, status: 'DRAFT', purchasedAt: null };
   }
 
-  if (!row.purchased_at) {
+  if (!row.purchased_at || !isISODate(row.purchased_at)) {
     throw new Error('Compra concluída sem data de conclusão.');
   }
 

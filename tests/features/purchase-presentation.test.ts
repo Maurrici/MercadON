@@ -85,9 +85,9 @@ describe('preenchimento da edição de item', () => {
 });
 
 describe('data administrativa da compra', () => {
-  it('converte entre a apresentação brasileira e o instante persistido', () => {
-    expect(formatPurchaseDate('2026-10-20T12:00:00.000Z')).toBe('20/10/2026');
-    expect(parsePurchaseDateInput('20/10/2026')).toBe('2026-10-20T12:00:00.000Z');
+  it('converte entre a apresentação brasileira e a data civil persistida', () => {
+    expect(formatPurchaseDate('2026-10-20')).toBe('20/10/2026');
+    expect(parsePurchaseDateInput('20/10/2026')).toBe('2026-10-20');
   });
 
   it('rejeita datas inexistentes ou em formato inesperado', () => {

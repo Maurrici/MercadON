@@ -12,7 +12,7 @@ import type {
   PurchaseSummary,
   SaveDraftPurchaseRecord,
 } from '@/domain/repositories/purchase.repository';
-import type { ISODateTime, UUID } from '@/domain/types';
+import type { ISODate, ISODateTime, UUID } from '@/domain/types';
 import type {
   PurchaseTransactionRepositories,
   PurchaseTransactionRunner,
@@ -70,11 +70,7 @@ export class InMemoryPurchaseRepository implements PurchaseRepository {
     return { ...purchase };
   }
 
-  async completeDraft(
-    id: UUID,
-    purchasedAt: ISODateTime,
-    updatedAt: ISODateTime,
-  ): Promise<Purchase> {
+  async completeDraft(id: UUID, purchasedAt: ISODate, updatedAt: ISODateTime): Promise<Purchase> {
     const purchase = this.requireActiveDraft(id);
     if (!(await this.hasActiveItems(id))) {
       throw new Error('Rascunho inexistente ou sem itens para finalização.');
@@ -98,7 +94,7 @@ export class InMemoryPurchaseRepository implements PurchaseRepository {
   async updateCompleted(
     id: UUID,
     marketId: UUID,
-    purchasedAt: ISODateTime,
+    purchasedAt: ISODate,
     updatedAt: ISODateTime,
   ): Promise<Purchase> {
     const index = this.purchases.findIndex(

@@ -103,7 +103,7 @@ describe('SQLite PurchaseItemRepository', () => {
   it('busca a ocorrência mais recente somente em compras concluídas', async () => {
     getFirstAsync.mockResolvedValue({
       ...variableRow,
-      purchased_at: '2026-10-22T18:00:00.000Z',
+      purchased_at: '2026-10-22',
     });
 
     await expect(
@@ -112,7 +112,7 @@ describe('SQLite PurchaseItemRepository', () => {
       expect.objectContaining({
         id: 'item-variable',
         productId: 'product-meat',
-        purchasedAt: '2026-10-22T18:00:00.000Z',
+        purchasedAt: '2026-10-22',
       }),
     );
     expect(getFirstAsync).toHaveBeenCalledWith(

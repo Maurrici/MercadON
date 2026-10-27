@@ -14,6 +14,8 @@ import {
 
 const FIRST_DATE = '2026-10-20T12:00:00.000Z';
 const SECOND_DATE = '2026-10-24T12:00:00.000Z';
+const FIRST_PURCHASE_DATE = '2026-10-20';
+const SECOND_PURCHASE_DATE = '2026-10-24';
 
 const FIXED_PRODUCT: Product = {
   id: 'product-coffee',
@@ -79,6 +81,7 @@ describe('regressão integrada da Milestone 3', () => {
       runInTransaction,
       createId: () => `purchase-${purchaseSequence++}`,
       now: () => currentDate,
+      today: () => (currentDate === FIRST_DATE ? FIRST_PURCHASE_DATE : SECOND_PURCHASE_DATE),
     });
     const itemService = createPurchaseItemService({
       purchases,
@@ -141,9 +144,9 @@ describe('regressão integrada da Milestone 3', () => {
     const secondCompleted = await purchaseService.completeDraft(secondDraft.purchase.id);
 
     await expect(
-      completedService.updateDetails(secondCompleted.id, 'market-1', SECOND_DATE),
+      completedService.updateDetails(secondCompleted.id, 'market-1', SECOND_PURCHASE_DATE),
     ).resolves.toMatchObject({
-      purchase: { marketId: 'market-1', purchasedAt: SECOND_DATE },
+      purchase: { marketId: 'market-1', purchasedAt: SECOND_PURCHASE_DATE },
       totalPriceCents: 900,
     });
     await expect(completedService.list()).resolves.toHaveLength(2);

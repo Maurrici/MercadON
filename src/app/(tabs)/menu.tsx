@@ -36,7 +36,12 @@ export default function MenuScreen() {
             onPress={() => router.push('/markets')}
             title="Mercados"
           />
-          <AccessCard disabled description="Análises e estatísticas" icon="▤" title="Histórico" />
+          <AccessCard
+            description="Análises e estatísticas"
+            icon="▤"
+            onPress={() => router.push('/analytics/monthly')}
+            title="Histórico"
+          />
         </View>
       </ScrollView>
     </Screen>

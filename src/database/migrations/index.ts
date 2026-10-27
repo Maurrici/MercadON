@@ -5,8 +5,9 @@ import { seedInitialCategories } from './003_seed_categories';
 import { addCategoryDescriptions } from './004_add_category_descriptions';
 import { addProductCommercializationType } from './005_add_product_commercialization_type';
 import { createPurchaseFoundation } from './006_purchase_foundation';
+import { normalizePurchaseDates } from './007_normalize_purchase_dates';
 
-type MigrationConnection = Pick<SQLiteDatabase, 'execAsync' | 'runAsync'>;
+type MigrationConnection = Pick<SQLiteDatabase, 'execAsync' | 'getAllAsync' | 'runAsync'>;
 
 type Migration = {
   version: number;
@@ -21,6 +22,7 @@ const MIGRATIONS: readonly Migration[] = [
   { version: 4, up: addCategoryDescriptions },
   { version: 5, up: addProductCommercializationType, requiresForeignKeysOff: true },
   { version: 6, up: createPurchaseFoundation, requiresForeignKeysOff: true },
+  { version: 7, up: normalizePurchaseDates },
 ];
 
 const DATABASE_VERSION = MIGRATIONS.at(-1)?.version ?? 0;

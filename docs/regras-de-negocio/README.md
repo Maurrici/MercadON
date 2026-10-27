@@ -1,6 +1,6 @@
 # MercadON — Regras de negócio
 
-> **Decisões vigentes do MVP** · Consolidação: **23/10/2026** · Idioma: pt-BR
+> **Decisões vigentes do MVP** · Consolidação: **27/10/2026** · Idioma: pt-BR
 > Fonte de verdade para comportamento esperado; **não é declaração de que tudo já está implementado**.
 
 ## Índice
@@ -15,6 +15,7 @@
 | [06 — Compras concluídas](06-compras-concluidas.md)                    | Listagem, correção, exclusão e histórico de gastos                 |
 | [07 — Experiência MVP](07-experiencia-mvp.md)                          | Padrões de interação já acordados                                  |
 | [08 — Pendências e divergências](08-pendencias-e-divergencias.md)      | Pontos técnicos ainda não alinhados ao código e decisões em aberto |
+| [09 — Análises e indicadores](09-analises.md)                          | Períodos, agregações, preços, rankings e estados analíticos        |
 
 ## Como ler
 
@@ -28,6 +29,7 @@
 
 - **M1 / M2:** catálogo pessoal de produtos, mercados e dados auxiliares.
 - **M3:** registrar, operar, persistir e consultar compras, com comparação de preços.
+- **M4:** Home mensal, gastos por categoria, ranking de produtos, variações e histórico analítico de preços.
 - **Fora do escopo atual:** listas pré-planejadas de compras, sincronização online obrigatória, gerenciamento livre de categorias ou unidades, filtro por categoria no carrinho.
 
 Referências principais: [issues do projeto](https://github.com/Maurrici/MercadON/issues), [Milestone 3](https://github.com/Maurrici/MercadON/milestone/3), [`src/domain/DOMAIN.md`](https://github.com/Maurrici/MercadON/blob/main/src/domain/DOMAIN.md) e [Figma — MercadON Mobile UI/UX](https://www.figma.com/design/aisX81ictadvWuASkD00H5/MercadON-%E2%80%94-Mobile-UI-UX).
@@ -39,7 +41,7 @@ Referências principais: [issues do projeto](https://github.com/Maurrici/MercadO
 3. Colocar dúvidas técnicas e definições ainda não resolvidas em [08 — Pendências](08-pendencias-e-divergencias.md), **não** misturá-las às regras aprovadas.
 4. Referenciar o documento no Pull Request que implementar ou alterar a regra.
 
-O plano executável da Milestone 3 está em [docs/planejamento/milestone-03.md](../planejamento/milestone-03.md).
+Os planos executáveis estão em [Milestone 3](../planejamento/milestone-03.md) e [Milestone 4](../planejamento/milestone-04.md).
 
 ### Histórico de decisões
 
@@ -49,3 +51,4 @@ O plano executável da Milestone 3 está em [docs/planejamento/milestone-03.md](
 | 22/10/2026 | Proteção definitiva de comercialização/medidas em produtos com compras concluídas; alternativa é criar novo produto. Descartadas propostas anteriores de converter, apagar ou versionar históricos ao editar o produto. |
 | 23/10/2026 | Mercado passou a ser obrigatório em toda compra; removida a opção “Sem mercado”. Para produtos fixos, o preço informado na compra é o preço por unidade comercial.                                                      |
 | 23/10/2026 | Aprovados o bloqueio estrutural de produto presente em `DRAFT`, o bloqueio da remoção do último item concluído e o uso dos nomes cadastrais atuais no histórico.                                                        |
+| 27/10/2026 | Aprovados data civil sem conversão posterior de fuso, limites de comparação mensal, estados de base zero, categoria atual nas análises e mercado obrigatório no histórico.                                              |
