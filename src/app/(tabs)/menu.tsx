@@ -42,6 +42,12 @@ export default function MenuScreen() {
             onPress={() => router.push('/analytics/monthly')}
             title="Histórico"
           />
+          {/*<AccessCard
+            description="Popule ou redefina os dados locais"
+            icon="⚙"
+            onPress={() => router.push('/test-environment')}
+            title="Teste"
+          />*/}
         </View>
       </ScrollView>
     </Screen>

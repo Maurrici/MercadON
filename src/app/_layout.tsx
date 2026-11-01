@@ -73,6 +73,8 @@ export default function RootLayout() {
                 <Stack.Screen name="analytics/products/[id]" options={{ headerShown: false }} />
 
                 <Stack.Screen name="analytics/variations" options={{ headerShown: false }} />
+
+                <Stack.Screen name="test-environment" options={{ headerShown: false }} />
               </Stack>
             </SQLiteProvider>
           </Suspense>
