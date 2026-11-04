@@ -1,6 +1,7 @@
 import { Component, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import { BrandLogo } from '@/components/BrandLogo';
 import { colors, spacing, typography } from '@/theme';
 
 type Props = {
@@ -28,7 +29,8 @@ export class DatabaseErrorBoundary extends Component<Props, State> {
     if (this.state.error) {
       return (
         <View style={styles.container}>
-          <Text style={styles.title}>Não foi possível iniciar o MercadON</Text>
+          <BrandLogo style={styles.logo} variant="compact" />
+          <Text style={styles.title}>Não foi possível iniciar o aplicativo</Text>
           <Text style={styles.description}>
             Houve um problema na inicialização. Feche e abra o aplicativo novamente. Seus dados não
             foram apagados.
@@ -53,6 +55,11 @@ const styles = StyleSheet.create({
     ...typography.title,
     color: colors.textPrimary,
     fontWeight: '700',
+  },
+  logo: {
+    width: 224,
+    height: 168,
+    alignSelf: 'center',
   },
   description: {
     ...typography.body,

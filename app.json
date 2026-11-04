@@ -6,24 +6,25 @@
     "orientation": "portrait",
     "scheme": "mercadon",
     "userInterfaceStyle": "light",
-    "ios": {
-      "icon": ""
-    },
+    "backgroundColor": "#F8FAFC",
+    "icon": "./assets/branding/mercadon-app-icon.png",
+    "ios": {},
     "android": {
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": ""
+      "favicon": "./assets/branding/mercadon-app-icon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "",
-          "image": "",
-          "imageWidth": 0
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/branding/mercadon-logo-compact.png",
+          "imageWidth": 224,
+          "resizeMode": "contain"
         }
       ],
       "expo-sqlite"

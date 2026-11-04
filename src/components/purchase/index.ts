@@ -1,6 +1,7 @@
 export * from './MarketSelectionSheet';
 export * from './PriceComparisonIndicator';
 export * from './ProductAlreadyAddedNotice';
+export * from './PurchaseAddProductFab';
 export * from './PurchaseItemForm';
 export * from './PurchaseItemActionSheet';
 export * from './PurchaseItemRow';

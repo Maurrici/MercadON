@@ -1,4 +1,5 @@
 import { DatabaseErrorBoundary } from '@/components/DatabaseErrorBoundary';
+import { BrandLogo } from '@/components/BrandLogo';
 import { DATABASE_NAME } from '@/database/config';
 import { initializeDatabase } from '@/database/initialize';
 import { colors, spacing, typography } from '@/theme';
@@ -24,8 +25,9 @@ const navigationTheme = {
 function DatabaseLoading() {
   return (
     <View style={styles.loading}>
+      <BrandLogo style={styles.loadingLogo} variant="compact" />
       <ActivityIndicator size="large" color={colors.primary} />
-      <Text style={styles.loadingText}>Preparando o MercadON...</Text>
+      <Text style={styles.loadingText}>Preparando seus dados...</Text>
     </View>
   );
 }
@@ -95,5 +97,9 @@ const styles = StyleSheet.create({
   loadingText: {
     ...typography.body,
     color: colors.textSecondary,
+  },
+  loadingLogo: {
+    width: 224,
+    height: 168,
   },
 });

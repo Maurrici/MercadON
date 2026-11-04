@@ -1,5 +1,6 @@
 import { AnalyticsCard } from '@/components/analytics/AnalyticsCard';
 import { AppButton } from '@/components/AppButton';
+import { BrandLogo } from '@/components/BrandLogo';
 import { MonthlyBarChart } from '@/components/charts';
 import { EmptyState } from '@/components/EmptyState';
 import { FeedbackToast } from '@/components/FeedbackToast';
@@ -68,7 +69,7 @@ export default function HomeScreen() {
   return (
     <Screen style={styles.screen}>
       <View style={styles.header}>
-        <Text style={styles.title}>MercadON</Text>
+        <BrandLogo style={styles.brandLogo} variant="horizontal" />
         {data ? <Text style={styles.period}>{formatMonth(data.overview.period.month)}</Text> : null}
       </View>
 
@@ -285,7 +286,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     backgroundColor: colors.surface,
   },
-  title: { ...typography.title, fontSize: 22, color: colors.textPrimary, fontWeight: '800' },
+  brandLogo: { width: 200, height: 58 },
   period: { ...typography.caption, color: colors.textSecondary, fontWeight: '700' },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   emptyContent: { flex: 1, justifyContent: 'center', gap: spacing.xl, padding: spacing.lg },

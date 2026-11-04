@@ -33,6 +33,20 @@ export function toPurchaseItemFormValues(item: PurchaseItem): PurchaseItemFormVa
   };
 }
 
+export function sortPurchaseItemsNewestFirst(items: readonly PurchaseItem[]): PurchaseItem[] {
+  return [...items].sort(
+    (left, right) =>
+      right.createdAt.localeCompare(left.createdAt) || right.id.localeCompare(left.id),
+  );
+}
+
+export function shouldReturnToProductSelection(
+  itemId: string | undefined,
+  hasSelectedProduct: boolean,
+): boolean {
+  return !itemId && hasSelectedProduct;
+}
+
 export function formatPurchaseDate(value: ISODate): string {
   if (!isISODate(value)) throw new Error('Data de compra inválida.');
   const [year, month, day] = value.split('-');
