@@ -1,12 +1,10 @@
-import { AppButton } from '@/components/AppButton';
 import { colors, spacing, typography } from '@/theme';
 import { formatCurrencyFromCents } from '@/utils/formatters';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export type PurchaseTotalBarProps = {
   totalPriceCents: number;
-  onAddProduct: () => void;
   onFinish: () => void;
   canFinish?: boolean;
   finishing?: boolean;
@@ -14,7 +12,6 @@ export type PurchaseTotalBarProps = {
 
 export function PurchaseTotalBar({
   totalPriceCents,
-  onAddProduct,
   onFinish,
   canFinish = true,
   finishing = false,
@@ -24,23 +21,30 @@ export function PurchaseTotalBar({
   return (
     <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, spacing.md) }]}>
       <View style={styles.totalRow}>
-        <Text style={styles.totalLabel}>Total da compra</Text>
-        <Text accessibilityLiveRegion="polite" style={styles.totalValue}>
-          {formatCurrencyFromCents(totalPriceCents)}
-        </Text>
-      </View>
-      <View style={styles.actions}>
-        <View style={styles.secondaryAction}>
-          <AppButton title="+ Adicionar produto" tone="secondary" onPress={onAddProduct} />
+        <View style={styles.totalGroup}>
+          <Text style={styles.totalLabel}>Total da compra</Text>
+          <Text accessibilityLiveRegion="polite" style={styles.totalValue}>
+            {formatCurrencyFromCents(totalPriceCents)}
+          </Text>
         </View>
-        <View style={styles.primaryAction}>
-          <AppButton
-            disabled={!canFinish}
-            loading={finishing}
-            title="Finalizar"
-            onPress={onFinish}
-          />
-        </View>
+        <Pressable
+          accessibilityLabel="Finalizar compra"
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !canFinish, busy: finishing }}
+          disabled={!canFinish || finishing}
+          onPress={onFinish}
+          style={({ pressed }) => [
+            styles.finishButton,
+            pressed && styles.pressed,
+            (!canFinish || finishing) && styles.disabled,
+          ]}
+        >
+          {finishing ? (
+            <ActivityIndicator color={colors.primary} />
+          ) : (
+            <Text style={styles.finishLabel}>Finalizar ›</Text>
+          )}
+        </Pressable>
       </View>
     </View>
   );
@@ -48,17 +52,24 @@ export function PurchaseTotalBar({
 
 const styles = StyleSheet.create({
   container: {
-    gap: spacing.md,
-    paddingTop: spacing.md,
+    paddingTop: 14,
     paddingHorizontal: spacing.lg,
     backgroundColor: colors.surface,
     borderTopWidth: 1,
     borderTopColor: colors.border,
   },
   totalRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  totalLabel: { ...typography.bodySmall, fontWeight: '600', color: colors.textSecondary },
-  totalValue: { ...typography.title, fontWeight: '800', color: colors.textPrimary },
-  actions: { flexDirection: 'row', gap: spacing.sm },
-  secondaryAction: { flex: 1.25 },
-  primaryAction: { flex: 1 },
+  totalGroup: { gap: 2 },
+  totalLabel: { ...typography.caption, fontSize: 13, color: colors.textSecondary },
+  totalValue: { ...typography.title, fontSize: 27, fontWeight: '800', color: colors.textPrimary },
+  finishButton: {
+    minWidth: 96,
+    minHeight: 48,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingLeft: spacing.md,
+  },
+  finishLabel: { ...typography.bodySmall, fontSize: 15, fontWeight: '700', color: colors.primary },
+  pressed: { opacity: 0.72 },
+  disabled: { opacity: 0.45 },
 });

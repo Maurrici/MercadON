@@ -1,5 +1,5 @@
 import type { PurchaseItem, PurchaseItemPricing } from '@/domain/models/PurchaseItem';
-import type { ISODateTime, UUID } from '@/domain/types';
+import type { ISODate, ISODateTime, UUID } from '@/domain/types';
 
 type PurchaseItemValues = PurchaseItemPricing & {
   quantityMilli: number;
@@ -7,7 +7,7 @@ type PurchaseItemValues = PurchaseItemPricing & {
 };
 
 export type HistoricalPurchaseItem = PurchaseItem & {
-  purchasedAt: ISODateTime;
+  purchasedAt: ISODate;
 };
 
 export type SavePurchaseItemRecord = PurchaseItemValues & {

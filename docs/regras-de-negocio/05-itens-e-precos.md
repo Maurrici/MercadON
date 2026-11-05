@@ -21,6 +21,7 @@
 - **RN-PRC-007 — Apresentação:** estado de preço deve combinar **ícone + texto + diferença monetária por unidade normalizada**, sem depender exclusivamente de cor. No estado sem histórico, não inventar variação.
 - **RN-PRC-008 — Consulta antes de confirmar:** mostrar brevemente a comparação antes de adicionar/atualizar o item.
 - **RN-PRC-009 — Variação de quantidade:** mudar apenas a quantidade (mantido o preço unitário real) não deve causar falsa sinalização de alta ou queda.
+- **RN-PRC-010 — Base zero:** preço anterior igual a zero não produz percentual e não participa de ranking de alta/queda; permanece no histórico com diferença monetária. A passagem de preço positivo para zero é queda válida de `100%`.
 
 ## Exemplos de base
 

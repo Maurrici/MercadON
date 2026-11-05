@@ -14,7 +14,8 @@ import {
 } from '../helpers/in-memory-purchase.repositories';
 
 const NOW = '2026-10-23T12:00:00.000Z';
-const UPDATED_DATE = '2026-10-20T18:00:00.000Z';
+const PURCHASE_DATE = '2026-10-23';
+const UPDATED_DATE = '2026-10-20';
 
 const FIXED_PRODUCT: Product = {
   id: 'product-coffee',
@@ -69,7 +70,7 @@ async function createHarness() {
     createdAt: NOW,
     updatedAt: NOW,
   });
-  await purchases.completeDraft(draft.id, NOW, NOW);
+  await purchases.completeDraft(draft.id, PURCHASE_DATE, NOW);
 
   const transactionRepositories = createPurchaseTransactionRepositories(
     markets,
@@ -95,7 +96,7 @@ describe('CompletedPurchaseService', () => {
     const { service } = await createHarness();
     await expect(service.getDetails('purchase-1')).resolves.toEqual(
       expect.objectContaining({
-        purchase: expect.objectContaining({ status: 'COMPLETED', purchasedAt: NOW }),
+        purchase: expect.objectContaining({ status: 'COMPLETED', purchasedAt: PURCHASE_DATE }),
         items: [expect.objectContaining({ id: 'item-fixed', totalPriceCents: 2980 })],
         totalPriceCents: 2980,
       }),
@@ -120,9 +121,9 @@ describe('CompletedPurchaseService', () => {
     await expect(service.updateDetails('purchase-1', 'missing', UPDATED_DATE)).rejects.toThrow(
       'Mercado não encontrado.',
     );
-    await expect(service.updateDetails('purchase-1', 'market-1', 'inválida')).rejects.toThrow(
-      'Informe uma data de compra válida.',
-    );
+    await expect(
+      service.updateDetails('purchase-1', 'market-1', 'inválida' as never),
+    ).rejects.toThrow('Informe uma data de compra válida.');
   });
 
   it('edita item existente e adiciona novo item recalculando o total', async () => {

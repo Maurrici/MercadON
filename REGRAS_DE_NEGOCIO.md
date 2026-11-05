@@ -1,6 +1,6 @@
 # MercadON — Regras de negócio do MVP
 
-**Consolidado em 22/10/2026.** Esta é a entrada rápida. As regras detalhadas e os pontos pendentes ficam em [docs/regras-de-negocio/README.md](docs/regras-de-negocio/README.md).
+**Consolidado em 27/10/2026.** Esta é a entrada rápida. As regras detalhadas e os pontos pendentes ficam em [docs/regras-de-negocio/README.md](docs/regras-de-negocio/README.md).
 
 ## Decisões essenciais
 
@@ -14,6 +14,7 @@
 8. **Preços:** comparar **preço por unidade comercial** (fixo) ou **preço por unidade de medida** (variável), usando a última compra **concluída** daquele produto em qualquer mercado, nunca valores totais incompatíveis.
 9. **Finalização:** exige ao menos um item e confirmação com o total; compra concluída entra no histórico. Data da compra pode ser corrigida.
 10. **Histórico:** compras concluídas podem ser editadas; sua exclusão é definitiva e afeta análises, com confirmação. Exclusão de cadastros não apaga gastos históricos.
+11. **Análises:** usam compras concluídas e valores em centavos, agrupam pela categoria atual do produto e tratam a compra como data civil `YYYY-MM-DD`. Bases anteriores iguais a zero não geram percentuais inválidos.
 
 ## Documentação por domínio
 
@@ -25,5 +26,6 @@
 - [Compras concluídas](docs/regras-de-negocio/06-compras-concluidas.md)
 - [Experiência mobile](docs/regras-de-negocio/07-experiencia-mvp.md)
 - [Pendências e divergências com o código](docs/regras-de-negocio/08-pendencias-e-divergencias.md)
+- [Análises e indicadores](docs/regras-de-negocio/09-analises.md)
 
 **Atenção:** regras aprovadas ≠ funcionalidades implementadas. Consulte as [pendências](docs/regras-de-negocio/08-pendencias-e-divergencias.md) antes de alterar banco ou modelos.

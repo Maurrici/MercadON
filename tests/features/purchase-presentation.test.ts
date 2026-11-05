@@ -1,6 +1,8 @@
 import {
   formatPurchaseDate,
   parsePurchaseDateInput,
+  shouldReturnToProductSelection,
+  sortPurchaseItemsNewestFirst,
   toDraftSummary,
   toPurchaseItemFormValues,
 } from '@/features/purchases/presentation';
@@ -84,10 +86,30 @@ describe('preenchimento da edição de item', () => {
   });
 });
 
+describe('fluxo de inclusão no carrinho', () => {
+  it('mostra primeiro os itens adicionados mais recentemente sem alterar a lista original', () => {
+    const older = { ...draft.items[0], id: 'item-older', createdAt: '2026-10-23T10:00:00.000Z' };
+    const newer = { ...draft.items[0], id: 'item-newer', createdAt: '2026-10-23T12:00:00.000Z' };
+    const items = [older, newer];
+
+    expect(sortPurchaseItemsNewestFirst(items).map((item) => item.id)).toEqual([
+      'item-newer',
+      'item-older',
+    ]);
+    expect(items.map((item) => item.id)).toEqual(['item-older', 'item-newer']);
+  });
+
+  it('volta do formulário novo para a seleção, mas sai da tela ao editar um item', () => {
+    expect(shouldReturnToProductSelection(undefined, true)).toBe(true);
+    expect(shouldReturnToProductSelection(undefined, false)).toBe(false);
+    expect(shouldReturnToProductSelection('item-1', true)).toBe(false);
+  });
+});
+
 describe('data administrativa da compra', () => {
-  it('converte entre a apresentação brasileira e o instante persistido', () => {
-    expect(formatPurchaseDate('2026-10-20T12:00:00.000Z')).toBe('20/10/2026');
-    expect(parsePurchaseDateInput('20/10/2026')).toBe('2026-10-20T12:00:00.000Z');
+  it('converte entre a apresentação brasileira e a data civil persistida', () => {
+    expect(formatPurchaseDate('2026-10-20')).toBe('20/10/2026');
+    expect(parsePurchaseDateInput('20/10/2026')).toBe('2026-10-20');
   });
 
   it('rejeita datas inexistentes ou em formato inesperado', () => {

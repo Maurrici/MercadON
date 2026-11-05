@@ -16,6 +16,7 @@
 - **RN-009 — Quantidades:** a representação corrente do domínio utiliza milésimos da unidade (ex.: `1,275 kg = 1275`, `2 un = 2000`); quantidades comerciais por unidade não podem ser fracionárias. Precisão e arredondamento de cálculos intermediários devem ser coerentes; detalhes pendentes estão no documento 08.
 - **RN-010 — Compra e item:** `DRAFT` é compra em andamento; `COMPLETED` é concluída. O preço praticado pertence ao item da compra, não ao cadastro global do produto.
 - **RN-011 — Histórico derivado:** o histórico de preços é obtido das compras concluídas e seus itens; não há obrigação de criar uma tabela independente de histórico no MVP.
+- **RN-012 — Data da compra:** `purchasedAt` representa uma data civil no formato `YYYY-MM-DD`, capturada no calendário local do aparelho. Diferentemente de `createdAt` e `updatedAt`, não representa um instante UTC e não sofre conversão posterior de fuso.
 
 ## Prioridade de consistência
 

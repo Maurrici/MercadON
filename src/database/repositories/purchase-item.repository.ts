@@ -1,5 +1,6 @@
 import type { MeasurementUnit } from '@/domain/enums/MeasurementUnit';
 import type { ProductCommercializationType } from '@/domain/enums/ProductCommercializationType';
+import { isISODate } from '@/domain/date';
 import type { PurchaseItem } from '@/domain/models/PurchaseItem';
 import type {
   HistoricalPurchaseItem,
@@ -96,7 +97,9 @@ export function createPurchaseItemRepository(db: SQLiteDatabase): PurchaseItemRe
       );
 
       if (!row) return null;
-      if (!row.purchased_at) throw new Error('Item histórico sem data de compra.');
+      if (!row.purchased_at || !isISODate(row.purchased_at)) {
+        throw new Error('Item histórico sem data de compra válida.');
+      }
       return { ...mapPurchaseItem(row), purchasedAt: row.purchased_at };
     },
 

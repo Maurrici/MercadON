@@ -1,4 +1,5 @@
 import type { Purchase } from '@/domain/models/Purchase';
+import { toLocalISODate } from '@/domain/date';
 import type { PurchaseItem } from '@/domain/models/PurchaseItem';
 import type { MarketRepository } from '@/domain/repositories/market.repository';
 import type { ProductRepository } from '@/domain/repositories/product.repository';
@@ -46,6 +47,7 @@ type PurchaseServiceDependencies = {
   runInTransaction: PurchaseTransactionRunner;
   createId: () => UUID;
   now?: () => ISODateTime;
+  today?: () => ReturnType<typeof toLocalISODate>;
 };
 
 export function createPurchaseService({
@@ -54,6 +56,7 @@ export function createPurchaseService({
   runInTransaction,
   createId,
   now = () => new Date().toISOString(),
+  today = () => toLocalISODate(),
 }: PurchaseServiceDependencies): PurchaseService {
   return {
     async getDraft() {
@@ -98,11 +101,7 @@ export function createPurchaseService({
     completeDraft(purchaseId) {
       return runInTransaction(async (repositories) => {
         const timestamp = now();
-        const purchase = await repositories.purchases.completeDraft(
-          purchaseId,
-          timestamp,
-          timestamp,
-        );
+        const purchase = await repositories.purchases.completeDraft(purchaseId, today(), timestamp);
 
         if (purchase.status !== 'COMPLETED') {
           throw new Error('A compra não foi concluída corretamente.');

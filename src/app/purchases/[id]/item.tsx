@@ -20,7 +20,10 @@ import {
 import type { Category } from '@/domain/models/Category';
 import type { ProductListItem } from '@/domain/repositories/product.repository';
 import { formatProductDetails } from '@/features/products/presentation';
-import { toPurchaseItemFormValues } from '@/features/purchases/presentation';
+import {
+  shouldReturnToProductSelection,
+  toPurchaseItemFormValues,
+} from '@/features/purchases/presentation';
 import { useProductService } from '@/hooks/useProductService';
 import { useCompletedPurchaseService } from '@/hooks/useCompletedPurchaseService';
 import { usePurchaseItemService } from '@/hooks/usePurchaseItemService';
@@ -241,6 +244,23 @@ export default function PurchaseItemScreen() {
     setPreviewTotal(null);
   }
 
+  function resetProductSelection() {
+    setSelectedProduct(null);
+    setAlreadyAdded(false);
+    setItemValues(EMPTY_ITEM_FORM);
+    setItemErrors({});
+    setComparison(null);
+    setPreviewTotal(null);
+  }
+
+  function goBack() {
+    if (shouldReturnToProductSelection(itemId, selectedProduct !== null)) {
+      resetProductSelection();
+      return;
+    }
+    router.back();
+  }
+
   function changeItemField<Key extends keyof PurchaseItemFormValues>(
     field: Key,
     value: PurchaseItemFormValues[Key],
@@ -414,7 +434,7 @@ export default function PurchaseItemScreen() {
             accessibilityLabel="Voltar"
             accessibilityRole="button"
             hitSlop={8}
-            onPress={() => router.back()}
+            onPress={goBack}
             style={styles.backButton}
           >
             <Text style={styles.backIcon}>‹</Text>
@@ -474,7 +494,7 @@ export default function PurchaseItemScreen() {
                 <Text style={styles.selectedDetails}>{formatProductDetails(selectedProduct)}</Text>
               </View>
               {!itemId ? (
-                <Pressable accessibilityRole="button" onPress={() => setSelectedProduct(null)}>
+                <Pressable accessibilityRole="button" onPress={resetProductSelection}>
                   <Text style={styles.changeProduct}>Trocar</Text>
                 </Pressable>
               ) : null}
@@ -503,7 +523,7 @@ export default function PurchaseItemScreen() {
                     ? 'UNIT'
                     : (selectedProduct.packageUnit ?? 'UNIT')
                 }
-                onCancel={() => router.back()}
+                onCancel={goBack}
                 onChangeField={changeItemField}
                 onSubmit={() => void saveItem()}
                 submitLabel={itemId ? 'Salvar alterações' : 'Adicionar à compra'}

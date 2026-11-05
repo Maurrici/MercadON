@@ -1,5 +1,5 @@
 import type { Purchase } from '@/domain/models/Purchase';
-import type { ISODateTime, UUID } from '@/domain/types';
+import type { ISODate, ISODateTime, UUID } from '@/domain/types';
 
 export type PurchaseSummary = Extract<Purchase, { status: 'COMPLETED' }> & {
   marketName: string;
@@ -20,12 +20,12 @@ export type PurchaseRepository = {
   listCompleted(): Promise<PurchaseSummary[]>;
   createDraft(input: SaveDraftPurchaseRecord): Promise<Purchase>;
   updateDraftMarket(id: UUID, marketId: UUID, updatedAt: ISODateTime): Promise<Purchase>;
-  completeDraft(id: UUID, purchasedAt: ISODateTime, updatedAt: ISODateTime): Promise<Purchase>;
+  completeDraft(id: UUID, purchasedAt: ISODate, updatedAt: ISODateTime): Promise<Purchase>;
   softDeleteDraft(id: UUID, deletedAt: ISODateTime): Promise<void>;
   updateCompleted(
     id: UUID,
     marketId: UUID,
-    purchasedAt: ISODateTime,
+    purchasedAt: ISODate,
     updatedAt: ISODateTime,
   ): Promise<Purchase>;
   deleteCompleted(id: UUID): Promise<void>;

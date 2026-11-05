@@ -1,4 +1,4 @@
-import type { ISODateTime, UUID } from '@/domain/types';
+import type { ISODate, ISODateTime, UUID } from '@/domain/types';
 
 type PurchaseBase = {
   id: UUID;
@@ -17,6 +17,6 @@ export type Purchase = PurchaseBase &
       }
     | {
         status: 'COMPLETED';
-        purchasedAt: ISODateTime;
+        purchasedAt: ISODate;
       }
   );

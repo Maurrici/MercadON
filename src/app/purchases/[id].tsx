@@ -6,6 +6,7 @@ import { FeedbackToast } from '@/components/FeedbackToast';
 import { type MarketFormValues } from '@/components/market';
 import {
   MarketSelectionSheet,
+  PurchaseAddProductFab,
   PurchaseItemActionSheet,
   PurchaseItemRow,
   PurchaseTotalBar,
@@ -16,7 +17,10 @@ import type { Market } from '@/domain/models/Market';
 import type { PurchaseItem } from '@/domain/models/PurchaseItem';
 import type { ProductListItem } from '@/domain/repositories/product.repository';
 import { formatProductDetails } from '@/features/products/presentation';
-import { toPurchaseItemFormValues } from '@/features/purchases/presentation';
+import {
+  sortPurchaseItemsNewestFirst,
+  toPurchaseItemFormValues,
+} from '@/features/purchases/presentation';
 import { useMarketService } from '@/hooks/useMarketService';
 import { useProductService } from '@/hooks/useProductService';
 import { usePurchaseItemService } from '@/hooks/usePurchaseItemService';
@@ -87,7 +91,7 @@ export default function PurchaseCartScreen() {
       }
 
       const items = await Promise.all(
-        details.items.map(async (item): Promise<CartItem> => {
+        sortPurchaseItemsNewestFirst(details.items).map(async (item): Promise<CartItem> => {
           const product = products.find((candidate) => candidate.id === item.productId) ?? null;
           if (!product) return { item, product: null, comparison: null };
           try {
@@ -383,12 +387,18 @@ export default function PurchaseCartScreen() {
         </View>
       ) : null}
 
+      <View style={styles.fabArea}>
+        <PurchaseAddProductFab
+          disabled={busy}
+          onPress={() =>
+            router.push({ pathname: '/purchases/[id]/item', params: { id: purchaseId } })
+          }
+        />
+      </View>
+
       <PurchaseTotalBar
         canFinish={(draft?.items.length ?? 0) > 0}
         finishing={busy && finishVisible}
-        onAddProduct={() =>
-          router.push({ pathname: '/purchases/[id]/item', params: { id: purchaseId } })
-        }
         onFinish={() => setFinishVisible(true)}
         totalPriceCents={draft?.totalPriceCents ?? 0}
       />
@@ -528,5 +538,11 @@ const styles = StyleSheet.create({
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   list: { gap: spacing.sm, paddingBottom: spacing.lg },
   feedback: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm },
+  fabArea: {
+    alignItems: 'flex-end',
+    paddingTop: spacing.sm,
+    paddingRight: spacing.lg,
+    paddingBottom: spacing.md,
+  },
   menuActions: { gap: spacing.md, paddingBottom: spacing.sm },
 });

@@ -1,4 +1,5 @@
 import type { Purchase } from '@/domain/models/Purchase';
+import { isISODate } from '@/domain/date';
 import type { PurchaseItem } from '@/domain/models/PurchaseItem';
 import type { MarketRepository } from '@/domain/repositories/market.repository';
 import type { ProductRepository } from '@/domain/repositories/product.repository';
@@ -7,7 +8,7 @@ import type {
   PurchaseRepository,
   PurchaseSummary,
 } from '@/domain/repositories/purchase.repository';
-import type { ISODateTime, UUID } from '@/domain/types';
+import type { ISODate, ISODateTime, UUID } from '@/domain/types';
 import {
   comparePurchaseItemWithHistory,
   preparePurchaseItem,
@@ -41,7 +42,7 @@ export type CompletedPurchaseService = {
   updateDetails(
     purchaseId: UUID,
     marketId: UUID,
-    purchasedAt: ISODateTime,
+    purchasedAt: ISODate,
   ): Promise<CompletedPurchaseDetails>;
   previewItem(
     purchaseId: UUID,
@@ -216,8 +217,8 @@ async function requireActiveMarket(markets: MarketRepository, marketId: UUID) {
   if (!market || market.deletedAt !== null) throw new Error('Mercado não encontrado.');
 }
 
-function requireValidPurchasedAt(purchasedAt: ISODateTime) {
-  if (!purchasedAt || Number.isNaN(Date.parse(purchasedAt))) {
+function requireValidPurchasedAt(purchasedAt: ISODate) {
+  if (!isISODate(purchasedAt)) {
     throw new Error('Informe uma data de compra válida.');
   }
 }

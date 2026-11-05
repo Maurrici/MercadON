@@ -3,6 +3,8 @@ import type { Purchase } from '@/domain/models/Purchase';
 import type { PurchaseDraftDetails } from '@/services/purchase.service';
 import type { PurchaseItem } from '@/domain/models/PurchaseItem';
 import type { PurchaseItemFormValues } from '@/components/purchase';
+import { isISODate } from '@/domain/date';
+import type { ISODate } from '@/domain/types';
 import { formatCentsInput, formatMilliInput } from '@/utils/formatters';
 
 export type DraftSummary = {
@@ -31,24 +33,30 @@ export function toPurchaseItemFormValues(item: PurchaseItem): PurchaseItemFormVa
   };
 }
 
-export function formatPurchaseDate(value: string): string {
-  const date = new Date(value);
-  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC' }).format(date);
+export function sortPurchaseItemsNewestFirst(items: readonly PurchaseItem[]): PurchaseItem[] {
+  return [...items].sort(
+    (left, right) =>
+      right.createdAt.localeCompare(left.createdAt) || right.id.localeCompare(left.id),
+  );
 }
 
-export function parsePurchaseDateInput(value: string): string | null {
+export function shouldReturnToProductSelection(
+  itemId: string | undefined,
+  hasSelectedProduct: boolean,
+): boolean {
+  return !itemId && hasSelectedProduct;
+}
+
+export function formatPurchaseDate(value: ISODate): string {
+  if (!isISODate(value)) throw new Error('Data de compra inválida.');
+  const [year, month, day] = value.split('-');
+  return `${day}/${month}/${year}`;
+}
+
+export function parsePurchaseDateInput(value: string): ISODate | null {
   const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
   if (!match) return null;
   const [, day, month, year] = match;
-  const iso = `${year}-${month}-${day}T12:00:00.000Z`;
-  const date = new Date(iso);
-  if (
-    Number.isNaN(date.getTime()) ||
-    date.getUTCFullYear() !== Number(year) ||
-    date.getUTCMonth() + 1 !== Number(month) ||
-    date.getUTCDate() !== Number(day)
-  ) {
-    return null;
-  }
-  return iso;
+  const iso = `${year}-${month}-${day}`;
+  return isISODate(iso) ? iso : null;
 }

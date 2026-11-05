@@ -12,11 +12,13 @@ const draftRow = {
   deleted_at: null,
 };
 
+const COMPLETED_DATE = '2026-10-22' as const;
+
 const completedRow = {
   ...draftRow,
   id: 'purchase-completed',
   status: 'COMPLETED' as const,
-  purchased_at: '2026-10-22T18:00:00.000Z',
+  purchased_at: COMPLETED_DATE,
   market_name: 'Mercado Central',
   item_count: 2,
   total_price_cents: 4250,
@@ -102,7 +104,7 @@ describe('SQLite PurchaseRepository', () => {
     runAsync.mockResolvedValue({ changes: 0, lastInsertRowId: 0 });
 
     await expect(
-      repository.completeDraft(draftRow.id, draftRow.updated_at, draftRow.updated_at),
+      repository.completeDraft(draftRow.id, draftRow.updated_at as never, draftRow.updated_at),
     ).rejects.toThrow('Rascunho inexistente ou sem itens para finalização.');
   });
 
@@ -111,22 +113,22 @@ describe('SQLite PurchaseRepository', () => {
     getFirstAsync.mockResolvedValue({
       ...completedRow,
       market_id: 'market-2',
-      purchased_at: '2026-10-20T18:00:00.000Z',
+      purchased_at: '2026-10-20',
     });
 
     await expect(
       repository.updateCompleted(
         completedRow.id,
         'market-2',
-        '2026-10-20T18:00:00.000Z',
+        '2026-10-20',
         completedRow.updated_at,
       ),
     ).resolves.toEqual(
-      expect.objectContaining({ marketId: 'market-2', purchasedAt: '2026-10-20T18:00:00.000Z' }),
+      expect.objectContaining({ marketId: 'market-2', purchasedAt: '2026-10-20' }),
     );
     expect(runAsync).toHaveBeenCalledWith(expect.stringContaining("status = 'COMPLETED'"), [
       'market-2',
-      '2026-10-20T18:00:00.000Z',
+      '2026-10-20',
       completedRow.updated_at,
       completedRow.id,
     ]);

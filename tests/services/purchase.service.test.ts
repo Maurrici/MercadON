@@ -11,6 +11,7 @@ import {
 } from '../helpers/in-memory-purchase.repositories';
 
 const NOW = '2026-10-23T12:00:00.000Z';
+const TODAY = '2026-10-23';
 
 async function createHarness() {
   const markets = new InMemoryMarketRepository();
@@ -46,6 +47,7 @@ async function createHarness() {
     runInTransaction: createSerialPurchaseTransactionRunner(transactionRepositories),
     createId: () => `purchase-${nextId++}`,
     now: () => NOW,
+    today: () => TODAY,
   });
 
   return { markets, purchases, purchaseItems, service };
@@ -159,7 +161,7 @@ describe('PurchaseService - ciclo de vida do rascunho', () => {
       expect.objectContaining({
         id: draft.purchase.id,
         status: 'COMPLETED',
-        purchasedAt: NOW,
+        purchasedAt: TODAY,
         updatedAt: NOW,
       }),
     );
