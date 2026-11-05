@@ -4,6 +4,12 @@ Aplicativo para organização de compras de supermercado e acompanhamento de gas
 
 O MercadON tem como princípio oferecer uma experiência simples, gratuita em suas funcionalidades essenciais e offline-first.
 
+## Download para Android
+
+[Baixar a versão mais recente do MercadON (APK)](https://github.com/Maurrici/MercadON/releases/latest/download/MercadON.apk)
+
+O Android pode solicitar autorização para instalar aplicativos provenientes do navegador ou do gerenciador de arquivos. O APK é publicado junto às [releases do projeto](https://github.com/Maurrici/MercadON/releases), onde também ficam disponíveis as notas de cada versão.
+
 ## Stack
 
 - React Native
@@ -119,3 +125,49 @@ As mesmas validações podem ser executadas localmente com:
 ```bash
 npm run check
 ```
+
+## Publicando um APK
+
+O projeto usa o EAS Build para gerar um APK assinado e o GitHub Actions para disponibilizá-lo em uma GitHub Release. O perfil `preview` de `eas.json` gera um APK de distribuição interna, instalável diretamente em dispositivos Android.
+
+### Configuração inicial
+
+Esta configuração precisa ser feita apenas uma vez por quem mantém o repositório:
+
+1. Crie uma conta gratuita no [Expo](https://expo.dev/signup) e autentique o EAS CLI:
+
+   ```bash
+   npx eas-cli@latest login
+   ```
+
+2. Vincule o repositório a um projeto do Expo:
+
+   ```bash
+   npx eas-cli@latest init
+   ```
+
+   O comando adicionará `extra.eas.projectId` à configuração do aplicativo. Essa alteração deve ser commitada.
+
+3. Execute o primeiro build para o EAS criar e armazenar com segurança a credencial de assinatura Android:
+
+   ```bash
+   npx eas-cli@latest build --platform android --profile preview
+   ```
+
+4. Crie um access token nas configurações da conta do Expo. No GitHub, acesse **Settings > Secrets and variables > Actions**, crie um repository secret chamado `EXPO_TOKEN` e informe esse token como valor.
+
+### Gerando uma versão
+
+1. Confirme que a versão desejada está na branch selecionada para o workflow.
+2. No GitHub, abra **Actions > Android Release > Run workflow**.
+3. Informe uma tag inédita no formato `v1.0.0` e inicie o workflow.
+
+O workflow valida o projeto, solicita o build ao EAS, baixa o APK resultante e cria uma GitHub Release contendo o arquivo `MercadON.apk`. Como o nome do arquivo é estável, o link de download deste README sempre aponta para o APK da release mais recente.
+
+Para gerar o APK manualmente sem publicar uma release, execute:
+
+```bash
+npx eas-cli@latest build --platform android --profile preview
+```
+
+Essa distribuição não exige uma conta de desenvolvedor da Google Play. O primeiro build exige interação para confirmar a criação da credencial Android; os builds seguintes podem ser executados pelo workflow com o `EXPO_TOKEN`.

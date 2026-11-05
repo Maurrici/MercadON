@@ -10,6 +10,7 @@
     "icon": "./assets/branding/mercadon-app-icon.png",
     "ios": {},
     "android": {
+      "package": "com.maurrici.mercadon",
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -32,6 +33,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6b44dc29-1b32-4825-be9b-888fc9f176e4"
+      }
+    },
+    "owner": "maurrici"
   }
 }

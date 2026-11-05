@@ -1,0 +1,89 @@
+name: Android Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Tag da versão (exemplo: v1.0.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-release
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    name: Build APK and publish release
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag }}
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Validate release tag
+        shell: bash
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Use uma tag sem espaços no formato v1.0.0."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v9
+        with:
+          eas-version: 27.4.1
+          packager: npm
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate project
+        run: npm run check
+
+      - name: Build APK with EAS
+        run: >-
+          eas build
+          --platform android
+          --profile preview
+          --non-interactive
+          --wait
+          --json
+          > build-result.json
+
+      - name: Download APK
+        shell: bash
+        run: |
+          APK_URL="$(jq -r 'if type == "array" then .[0] else . end | .artifacts.applicationArchiveUrl // empty' build-result.json)"
+
+          if [[ -z "$APK_URL" ]]; then
+            echo "O EAS não retornou a URL do APK."
+            cat build-result.json
+            exit 1
+          fi
+
+          curl --fail --location --retry 3 "$APK_URL" --output MercadON.apk
+
+      - name: Publish GitHub Release
+        run: >-
+          gh release create "$RELEASE_TAG"
+          MercadON.apk
+          --repo "$GITHUB_REPOSITORY"
+          --target "$GITHUB_SHA"
+          --title "MercadON $RELEASE_TAG"
+          --generate-notes
+          --latest
